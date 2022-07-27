@@ -68,7 +68,7 @@ end
 
 newoption {
 	trigger = "copy-to",
-	description = "Optional, copy the dll to a custom folder after build, define the path here if wanted.",
+	description = "Optional, copy the exe to a custom folder after build, define the path here if wanted.",
 	value = "PATH"
 }
 

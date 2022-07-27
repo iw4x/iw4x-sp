@@ -14,7 +14,7 @@ Singleplayer client for IW4 159
 
 | Argument                    | Description                                    |
 |:----------------------------|:-----------------------------------------------|
-| `--copy-to=PATH`            | Optional, copy the DLL to a custom folder after build, define the path here if wanted. |
+| `--copy-to=PATH`            | Optional, copy the exe to a custom folder after build. |
 
 ## Command line arguments
 
