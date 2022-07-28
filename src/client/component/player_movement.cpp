@@ -15,7 +15,7 @@ void __declspec(naked) pm_step_slide_move_stub() {
     je bounce;
 
     cmp dword ptr [esp + 0x24], 0;
-    jnz no_bounce
+    jnz no_bounce;
 
    bounce:
     push 0x4E905B;
