@@ -7,6 +7,17 @@
 
 namespace console {
 namespace {
+void hide_console() {
+  auto* const con_window = GetConsoleWindow();
+
+  DWORD process;
+  GetWindowThreadProcessId(con_window, &process);
+
+  if (process == GetCurrentProcessId() || IsDebuggerPresent()) {
+    ShowWindow(con_window, SW_HIDE);
+  }
+}
+
 void con_toggle_console() {
   game::Field_Clear(game::g_consoleField);
 
@@ -32,6 +43,8 @@ class component final : public component_interface {
 public:
   static_assert(sizeof(game::field_t) == 0x118);
   static_assert(sizeof(game::ConDrawInputGlob) == 0x64);
+
+  component() { hide_console(); }
 
   void post_start() override {
     // Prevents console from opening
