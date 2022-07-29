@@ -119,6 +119,11 @@ enum FsThread {
   FS_THREAD_INVALID = 0x6,
 };
 
+enum FsListBehavior_e {
+  FS_LIST_PURE_ONLY = 0x0,
+  FS_LIST_ALL = 0x1,
+};
+
 struct cmd_function_t {
   cmd_function_t* next;
   const char* name;

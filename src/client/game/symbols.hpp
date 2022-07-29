@@ -48,15 +48,22 @@ WEAK symbol<void(const char* error)> Scr_Error{0x4E9C50};
 WEAK symbol<void(const char* error)> Scr_ObjectError{0x470600};
 
 WEAK symbol<unsigned int()> Scr_GetNumParam{0x4443F0};
+WEAK symbol<void()> Scr_ClearOutParams{0x4A3A00};
 WEAK symbol<const char*(unsigned int index)> Scr_GetString{0x4D39C0};
 WEAK symbol<unsigned int(unsigned int index)> Scr_GetConstString{0x4AF1B0};
 WEAK symbol<int(unsigned int index)> Scr_GetInt{0x454520};
 WEAK symbol<void(int value)> Scr_AddInt{0x4865B0};
 WEAK symbol<void(int func, const char* name)> Scr_RegisterFunction{0x4F59C0};
+WEAK symbol<unsigned int(unsigned int index)> Scr_GetFunc{0x438E10};
 
 WEAK symbol<char*(const char* filename, const char* extFilename,
                   const char* codePos, bool archive)>
     Scr_AddSourceBuffer{0x4173C0};
+WEAK symbol<unsigned int(const char* filename)> Scr_LoadScript{0x46CD90};
+WEAK symbol<int(const char* filename, const char* name)> Scr_GetFunctionHandle{
+    0x462750};
+WEAK symbol<int(int handle, unsigned int paramcount)> Scr_ExecThread{0x41A2C0};
+WEAK symbol<void(unsigned __int16 handle)> Scr_FreeThread{0x4C44A0};
 
 // SL
 WEAK symbol<const char*(unsigned int stringValue)> SL_ConvertToString{0x40E990};
@@ -83,6 +90,12 @@ WEAK symbol<unsigned int(void* ptr, unsigned int len, void* stream)> FS_Read{
     0x42EDC0};
 WEAK symbol<void(void* h)> FS_FCloseFile{0x44E0A0};
 WEAK symbol<int(const char* filename, void** file)> FS_FOpenFileRead{0x48DD10};
+WEAK symbol<const char**(const char* path, const char* extension,
+                         FsListBehavior_e behavior, int* numfiles,
+                         int allocTrackType)>
+    FS_ListFiles{0x4448F0};
+WEAK symbol<void(const char** list, int allocTrackType)> FS_FreeFileList{
+    0x41C7A0};
 WEAK symbol<void(const char* gameName)> FS_Startup{0x47AF20};
 
 // IW functions, could use Microsoft specific functions but who cares

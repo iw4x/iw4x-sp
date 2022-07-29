@@ -75,7 +75,7 @@ void add_method(const char* name, game::BuiltinMethod func, bool type) {
   custom_scr_meths.emplace(utils::string::to_lower(name), def);
 }
 
-class component final : public component_interface {
+class extension final : public component_interface {
 public:
   void post_load() override {
     // Fetch custom functions
@@ -110,4 +110,4 @@ public:
 };
 } // namespace gsc
 
-REGISTER_COMPONENT(gsc::component)
+REGISTER_COMPONENT(gsc::extension)

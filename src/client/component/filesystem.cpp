@@ -13,6 +13,27 @@ const char* sys_default_install_path_stub() {
 }
 } // namespace
 
+std::vector<std::string> vectored_file_list(const std::string& path,
+                                            const std::string& extension) {
+  std::vector<std::string> file_list;
+
+  auto num_files = 0;
+  const auto** files = game::FS_ListFiles(path.data(), extension.data(),
+                                          game::FS_LIST_ALL, &num_files, 10);
+
+  if (files) {
+    for (auto i = 0; i < num_files; ++i) {
+      if (files[i]) {
+        file_list.emplace_back(files[i]);
+      }
+    }
+
+    game::FS_FreeFileList(files, 10);
+  }
+
+  return file_list;
+}
+
 file::file(std::string name, game::FsThread thread) : name_(std::move(name)) {
   assert(!this->name_.empty());
 
