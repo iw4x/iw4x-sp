@@ -13,7 +13,7 @@
 
 DECLSPEC_NORETURN void WINAPI exit_hook(const int code) {
   component_loader::pre_destroy();
-  exit(code);
+  std::exit(code);
 }
 
 launcher::mode detect_mode_from_arguments() {
@@ -61,8 +61,6 @@ FARPROC load_binary(const launcher::mode mode) {
   return loader.load(self, data);
 }
 
-void remove_crash_file() { utils::io::remove_file("__iw4x-sp"); }
-
 void enable_dpi_awareness() {
   const utils::nt::library user32{"user32.dll"};
   const auto set_dpi =
@@ -105,7 +103,6 @@ int main() {
 
     try {
       apply_environment();
-      remove_crash_file();
 
       if (!component_loader::post_start())
         return 0;

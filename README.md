@@ -8,7 +8,7 @@ Singleplayer client for IW4 159
 ## How to compile
 
 - Run `premake5 vs2022` or use the delivered `generate.bat`.
-- Build via solution file in `build\iw4x.sln`.
+- Build via solution file in `build\iw4x-sp.sln`.
 
 ## Premake arguments
 
@@ -20,7 +20,7 @@ Singleplayer client for IW4 159
 
 | Argument                | Description                                    |
 |:------------------------|:-----------------------------------------------|
-| `-nosteam`              | Disable Steam.                                  |
+| `-nosteam`              | Disable Steam.                                 |
 
 ## Disclaimer
 
