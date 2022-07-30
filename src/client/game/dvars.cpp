@@ -5,6 +5,8 @@ const game::dvar_t* r_noBorder = nullptr;
 
 const game::dvar_t* pm_bounce = nullptr;
 const game::dvar_t* pm_bouncingAllAngles = nullptr;
+const game::dvar_t* pm_rocketJump = nullptr;
+const game::dvar_t* pm_rocketJumpScale = nullptr;
 
 const game::dvar_t* cg_drawVersion = nullptr;
 const game::dvar_t* cg_drawVersionX = nullptr;

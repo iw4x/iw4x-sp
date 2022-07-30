@@ -52,23 +52,57 @@ void pm_project_velocity_stub(const float* vel_in, const float* normal,
     vel_out[2] = new_z * length_scale;
   }
 }
+
+game::gentity_s* weapon_rocket_launcher_fire_stub(
+    game::gentity_s* ent, unsigned int weapon_index, float spread,
+    game::weaponParms* wp, const float* gun_vel,
+    game::lockonFireParms* lock_parms, bool magic_bullet) {
+  auto* result = utils::hook::invoke<game::gentity_s*>(
+      0x443F20, ent, weapon_index, spread, wp, gun_vel, lock_parms,
+      magic_bullet);
+
+  if (ent->client != nullptr && dvars::pm_rocketJump->current.enabled) {
+    const auto scale = dvars::pm_rocketJumpScale->current.value;
+    ent->client->ps.velocity[0] += (0.0f - wp->forward[0]) * scale;
+    ent->client->ps.velocity[1] += (0.0f - wp->forward[1]) * scale;
+    ent->client->ps.velocity[2] += (0.0f - wp->forward[2]) * scale;
+  }
+
+  return result;
+}
 } // namespace
 
 class component final : public component_interface {
 public:
-  void post_load() override {
-    dvars::pm_bounce = game::Dvar_RegisterBool("pm_bounce", false,
-                                               game::DVAR_NONE, "CoD4 Bounces");
-    dvars::pm_bouncingAllAngles =
-        game::Dvar_RegisterBool("pm_bouncingAllAngles", false, game::DVAR_NONE,
-                                "Enable bouncing from all angles");
+  static_assert(sizeof(game::weaponParms) == 0x48);
+  static_assert(sizeof(game::lockonFireParms) == 0x18);
 
+  void post_load() override {
     utils::hook(0x4E9054, pm_step_slide_move_stub, HOOK_JUMP)
         .install()
         ->quick(); // PM_StepSlideMove
     utils::hook(0x4E90BE, pm_project_velocity_stub, HOOK_CALL)
         .install()
         ->quick(); // PM_StepSlideMove
+
+    utils::hook(0x4FA809, weapon_rocket_launcher_fire_stub, HOOK_CALL)
+        .install()
+        ->quick(); // FireWeapon
+
+    register_dvars();
+  }
+
+  static void register_dvars() {
+    // clang-format off
+    dvars::pm_bounce = game::Dvar_RegisterBool(
+        "pm_bounce", false, game::DVAR_NONE, "CoD4 Bounces");
+    dvars::pm_bouncingAllAngles = game::Dvar_RegisterBool(
+        "pm_bouncingAllAngles", false, game::DVAR_NONE, "Enable bouncing from all angles");
+    dvars::pm_rocketJump = game::Dvar_RegisterBool(
+        "pm_rocketJump", true, game::DVAR_NONE, "CoD4 rocket jumps");
+    dvars::pm_rocketJumpScale = game::Dvar_RegisterFloat(
+        "pm_rocketJumpScale", 64.0f, 0.0f, 1024.0f, game::DVAR_NONE, "");
+    // clang-format on
   }
 };
 } // namespace player_movement

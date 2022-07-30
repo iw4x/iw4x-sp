@@ -17,7 +17,7 @@ WEAK symbol<void(int, const char* text)> Cbuf_AddText{0x4A1090};
 WEAK symbol<void(int localClientNum, int controllerIndex, const char* text)>
     Cmd_ExecuteSingleCommand{0x46AFD0};
 WEAK symbol<void(const char* cmdName, void(*function),
-                 cmd_function_t* allocedCmd, int isKey)>
+                 cmd_function_s* allocedCmd, int isKey)>
     Cmd_AddCommand{0x4478A0};
 WEAK symbol<void(const char* cmdName, const char* dir, const char* ext)>
     Cmd_SetAutoComplete{0x48A880};

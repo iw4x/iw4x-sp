@@ -100,7 +100,7 @@ void add_raw(const char* name, void (*callback)(), int is_key) {
 
   game::Cmd_AddCommand(
       name, callback,
-      utils::memory::get_allocator()->allocate<game::cmd_function_t>(), is_key);
+      utils::memory::get_allocator()->allocate<game::cmd_function_s>(), is_key);
 }
 
 void add(const char* name, const std::function<void(const params&)>& callback) {
@@ -138,6 +138,7 @@ void execute(std::string command, const bool sync) {
 
 class component final : public component_interface {
 public:
+  static_assert(sizeof(game::cmd_function_s) == 0x18);
   static_assert(offsetof(game::gentity_s, client) == 0x108);
 
   void post_load() override {

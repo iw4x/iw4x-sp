@@ -124,8 +124,8 @@ enum FsListBehavior_e {
   FS_LIST_ALL = 0x1,
 };
 
-struct cmd_function_t {
-  cmd_function_t* next;
+struct cmd_function_s {
+  cmd_function_s* next;
   const char* name;
   const char* autoCompleteDir;
   const char* autoCompleteExt;
@@ -330,8 +330,24 @@ struct XZoneInfo {
   int freeFlags;
 };
 
+struct playerState_s {
+  int commandTime;
+  int pm_type;
+  int pm_time;
+  int pm_flags;
+  int otherFlags;
+  int linkFlags;
+  int bobCycle;
+  float origin[3];
+  float velocity[3];
+  unsigned char __pad0[0xAC70];
+};
+
+static_assert(sizeof(playerState_s) == 0xACA4);
+
 struct gclient_s {
-  unsigned char __pad0[0xAD54];
+  playerState_s ps;
+  unsigned char __pad0[0xB0];
   int flags; // 0xAD54
   unsigned char __pad1[0x27C];
 };
@@ -570,6 +586,24 @@ struct usercmd_s {
   char selectedLoc[2];
   unsigned char selectedLocAngle;
   char remoteControlAngles[2];
+};
+
+struct weaponParms {
+  float forward[3];
+  float right[3];
+  float up[3];
+  float muzzleTrace[3];
+  float gunForward[3];
+  unsigned int weaponIndex;
+  const void* weapDef;
+  const void* weapCompleteDef;
+};
+
+struct lockonFireParms {
+  bool lockon;
+  gentity_s* target;
+  float targetPosOrOffset[3];
+  bool topFire;
 };
 } // namespace game
 
