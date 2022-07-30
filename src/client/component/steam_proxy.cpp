@@ -104,8 +104,13 @@ private:
         "Steam_ConnectToGlobalUser", this->steam_pipe_);
     this->client_user_ = this->client_engine_.invoke<void*>(
         8, this->steam_pipe_, this->global_user_); // GetIClientUser
+#ifdef _DEBUG
+    this->client_utils_ = this->client_engine_.invoke<void*>(
+        14, this->steam_pipe_); // GetIClientUtils
+#else
     this->client_utils_ = this->client_engine_.invoke<void*>(
         13, this->steam_pipe_); // GetIClientUtils
+#endif
   }
 
   void start_mod(const std::string& title, const size_t app_id) {

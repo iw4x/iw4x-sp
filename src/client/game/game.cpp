@@ -38,4 +38,12 @@ int FS_FOpenFileReadForThread(const char* filename, void** file,
 
   return answer;
 }
+
+bool ScrPlace_IsFullScreenActive() {
+  return *activeScreenPlacementMode == SCRMODE_FULL;
+}
+
+ScreenPlacement* ScrPlace_GetUnsafeFullPlacement() {
+  return scrPlaceFullUnsafe;
+}
 } // namespace game

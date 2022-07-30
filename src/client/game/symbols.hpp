@@ -98,6 +98,17 @@ WEAK symbol<void(const char** list, int allocTrackType)> FS_FreeFileList{
     0x41C7A0};
 WEAK symbol<void(const char* gameName)> FS_Startup{0x47AF20};
 
+// UI
+WEAK symbol<Font_s*(const ScreenPlacement* scrPlace, int fontEnum, float scale)>
+    UI_GetFontHandle{0x4C2600};
+WEAK symbol<int(const char* text, int maxChars, Font_s* font, float scale)>
+    UI_TextWidth{0x4F5070};
+WEAK symbol<int(Font_s* font, float scale)> UI_TextHeight{0x407710};
+WEAK symbol<void(const ScreenPlacement* scrPlace, const char* text,
+                 int maxChars, Font_s* font, float x, float y, int horzAlign,
+                 int vertAlign, float scale, const float* color, int style)>
+    UI_DrawText{0x40FC70};
+
 // IW functions, could use Microsoft specific functions but who cares
 WEAK symbol<int(const char* s0, const char* s1)> I_stricmp{0x409B80};
 WEAK symbol<int(const char* s0, const char* s1, int n)> I_strnicmp{0x491E60};
@@ -117,6 +128,8 @@ WEAK symbol<ConDrawInputGlob> conDrawInputGlob{0x86E788};
 WEAK symbol<Console> con{0x86ED88};
 WEAK symbol<float> g_console_char_height{0x732658};
 WEAK symbol<int> g_console_field_width{0x732654};
+WEAK symbol<ScreenPlacementMode> activeScreenPlacementMode{0x93AAF4};
+WEAK symbol<ScreenPlacement> scrPlaceFullUnsafe{0x93AB70};
 
 WEAK symbol<void*> DB_GetXAssetSizeHandlers{0x733408};
 WEAK symbol<void*> DB_XAssetPool{0x7337F8};

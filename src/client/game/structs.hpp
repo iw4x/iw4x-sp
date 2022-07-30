@@ -509,6 +509,30 @@ struct Console {
 enum {
   KEYCATCH_CONSOLE = 0x1,
 };
+
+enum ScreenPlacementMode {
+  SCRMODE_FULL = 0x0,
+  SCRMODE_DISPLAY = 0x1,
+  SCRMODE_INVALID = 0x2,
+  SCRMODE_COUNT = 0x3,
+};
+
+struct ScreenPlacement {
+  float scaleVirtualToReal[2];
+  float scaleVirtualToFull[2];
+  float scaleRealToVirtual[2];
+  float realViewportPosition[2];
+  float realViewportSize[2];
+  float virtualViewableMin[2];
+  float virtualViewableMax[2];
+  float realViewableMin[2];
+  float realViewableMax[2];
+  float virtualAdjustableMin[2];
+  float virtualAdjustableMax[2];
+  float realAdjustableMin[2];
+  float realAdjustableMax[2];
+  float subScreenLeft;
+};
 } // namespace game
 
 #pragma warning(pop)

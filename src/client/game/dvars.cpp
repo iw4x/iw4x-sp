@@ -6,7 +6,14 @@ const game::dvar_t* r_noBorder = nullptr;
 const game::dvar_t* pm_bounce = nullptr;
 const game::dvar_t* pm_bouncingAllAngles = nullptr;
 
+const game::dvar_t* cg_drawVersion = nullptr;
+const game::dvar_t* cg_drawVersionX = nullptr;
+const game::dvar_t* cg_drawVersionY = nullptr;
+
 // Game dvars
 const game::dvar_t** g_specialops =
     reinterpret_cast<const game::dvar_t**>(0x1B2E1E8);
+
+const game::dvar_t** version =
+    reinterpret_cast<const game::dvar_t**>(0x145D690);
 } // namespace dvars

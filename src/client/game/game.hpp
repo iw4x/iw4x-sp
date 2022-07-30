@@ -25,8 +25,13 @@ private:
 };
 
 // Functions that require asm stubs to be called
+// or have been inlined
+
 int FS_FOpenFileReadForThread(const char* filename, void** file,
                               FsThread thread);
+
+bool ScrPlace_IsFullScreenActive();
+ScreenPlacement* ScrPlace_GetUnsafeFullPlacement();
 
 // Global definitions
 constexpr auto CMD_MAX_NESTING = 8;
