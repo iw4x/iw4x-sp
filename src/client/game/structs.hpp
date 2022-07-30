@@ -533,6 +533,44 @@ struct ScreenPlacement {
   float realAdjustableMax[2];
   float subScreenLeft;
 };
+
+enum usercmdButtonBits {
+  CMD_BUTTON_LEAN_LEFT = 0x40,
+  CMD_BUTTON_LEAN_RIGHT = 0x80,
+};
+
+struct kbutton_t {
+  int down[2];
+  unsigned int downtime;
+  unsigned int msec;
+  bool active;
+  bool wasPressed;
+};
+
+struct usercmd_s {
+  int serverTime;
+  int buttons;
+  int angles[3];
+  unsigned __int16 weapon;
+  unsigned __int16 primaryWeaponForAltMode;
+  unsigned __int16 offHandIndex;
+  char forwardmove;
+  char rightmove;
+  unsigned char upmove;
+  unsigned char downmove;
+  char pitchmove;
+  char yawmove;
+  float gunPitch;
+  float gunYaw;
+  float gunXOfs;
+  float gunYOfs;
+  float gunZOfs;
+  float meleeChargeYaw;
+  unsigned char meleeChargeDist;
+  char selectedLoc[2];
+  unsigned char selectedLocAngle;
+  char remoteControlAngles[2];
+};
 } // namespace game
 
 #pragma warning(pop)

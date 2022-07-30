@@ -30,6 +30,9 @@ private:
 int FS_FOpenFileReadForThread(const char* filename, void** file,
                               FsThread thread);
 
+void IN_KeyDown(kbutton_t* b);
+void IN_KeyUp(kbutton_t* b);
+
 bool ScrPlace_IsFullScreenActive();
 ScreenPlacement* ScrPlace_GetUnsafeFullPlacement();
 

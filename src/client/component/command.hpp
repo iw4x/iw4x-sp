@@ -29,7 +29,7 @@ private:
   int nesting_;
 };
 
-void add_raw(const char* name, void (*callback)());
+void add_raw(const char* name, void (*callback)(), int is_key = 0);
 void add(const char* name, const std::function<void(const params&)>& callback);
 void add(const char* name, const std::function<void()>& callback);
 

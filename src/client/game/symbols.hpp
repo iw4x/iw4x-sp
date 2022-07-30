@@ -17,11 +17,12 @@ WEAK symbol<void(int, const char* text)> Cbuf_AddText{0x4A1090};
 WEAK symbol<void(int localClientNum, int controllerIndex, const char* text)>
     Cmd_ExecuteSingleCommand{0x46AFD0};
 WEAK symbol<void(const char* cmdName, void(*function),
-                 cmd_function_t* allocedCmd)>
+                 cmd_function_t* allocedCmd, int isKey)>
     Cmd_AddCommand{0x4478A0};
 WEAK symbol<void(const char* cmdName, const char* dir, const char* ext)>
     Cmd_SetAutoComplete{0x48A880};
 
+// Dvars
 WEAK symbol<dvar_t*(const char* dvarName)> Dvar_FindVar{0x4B29D0};
 WEAK symbol<const dvar_t*(const char* dvarName, const char* value,
                           unsigned __int16 flags, const char* description)>
@@ -40,8 +41,14 @@ WEAK symbol<const dvar_t*(const char* dvarName, float value, float min,
 WEAK symbol<const dvar_t*(const char* dvarName, int value, int min, int max,
                           unsigned __int16 flags, const char* description)>
     Dvar_RegisterInt{0x4E9490};
+
+WEAK symbol<void(const char* dvarName, double value)> Dvar_SetFloatByName{
+    0x497250};
+WEAK symbol<void(const char* dvarName, const char* value)> Dvar_SetStringByName{
+    0x440C60};
 WEAK symbol<void(const dvar_t* dvar, const char* value)> Dvar_SetString{
     0x480E70};
+WEAK symbol<const char*(const char* dvarName)> Dvar_GetString{0x411F50};
 
 // Script
 WEAK symbol<void(const char* error)> Scr_Error{0x4E9C50};
@@ -74,15 +81,15 @@ WEAK symbol<char*(netadr_t a)> NET_AdrToString{0x4BF490};
 WEAK symbol<void*(int size)> Hunk_AllocateTempMemory{0x492DF0};
 
 // DB
-WEAK symbol<void(XZoneInfo* zoneInfo, unsigned int zoneCount,
-                 unsigned int syncMode)>
-    DB_LoadXAssets{0x4E5930};
 WEAK symbol<XAssetHeader(XAssetType type, const char* name)>
     DB_FindXAssetHeader{0x40B200};
 WEAK symbol<int(XAssetType type, const char* name)> DB_IsXAssetDefault{
     0x41AB70};
 WEAK symbol<void(RawFile* rawfile, char* buffer, int size)> DB_GetRawBuffer{
     0x4345E0};
+WEAK symbol<void(XZoneInfo* zoneInfo, unsigned int zoneCount,
+                 unsigned int syncMode)>
+    DB_LoadXAssets{0x4CFC90};
 
 // FS
 WEAK symbol<void(void* buffer)> FS_FreeFile{0x4416B0};

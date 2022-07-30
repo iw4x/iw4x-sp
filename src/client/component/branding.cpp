@@ -38,7 +38,7 @@ void cg_draw_version() {
   constexpr auto font_scale = 0.25f;
   constexpr auto max_chars = std::numeric_limits<int>::max();
   // Default colours
-  constexpr float shadowColor[] = {0.0f, 0.0f, 0.0f, 0.69f};
+  constexpr float shadow_color[] = {0.0f, 0.0f, 0.0f, 0.69f};
   constexpr float color[] = {0.4f, 0.69f, 1.0f, 0.69f};
 
   auto* const placement = game::ScrPlace_GetUnsafeFullPlacement();
@@ -55,7 +55,7 @@ void cg_draw_version() {
                         static_cast<float>(width)),
                     1.0f - (dvars::cg_drawVersionY->current.value +
                         static_cast<float>(height)),
-                    3, 3, font_scale, shadowColor, 0);
+                    3, 3, font_scale, shadow_color, 0);
   game::UI_DrawText(placement, (*dvars::version)->current.string, max_chars,
                     font,
                     (0.0f - static_cast<float>(width)) -
