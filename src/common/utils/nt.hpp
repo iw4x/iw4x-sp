@@ -94,6 +94,9 @@ public:
   void** get_iat_entry(const std::string& module_name,
                        const std::string& proc_name) const;
 
+  static void set_dll_directory(const std::string& directory);
+  static std::string get_dll_directory();
+
 private:
   HMODULE module_;
 };
@@ -101,6 +104,10 @@ private:
 __declspec(noreturn) void raise_hard_exception();
 std::string load_resource(int id);
 
-void relaunch_self();
+void launch_process(const std::string& process,
+                    const std::string& command_line);
+void relaunch_self(const std::string& command_line = "");
+void update_dll_search_path(const std::string& directory);
+
 __declspec(noreturn) void terminate(uint32_t code = 0);
 } // namespace utils::nt

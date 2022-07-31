@@ -2,6 +2,10 @@
 #include "../loader/component_loader.hpp"
 
 #include <utils/hook.hpp>
+#include <utils/nt.hpp>
+
+#include "command.hpp"
+#include "filesystem.hpp"
 
 namespace patches {
 namespace {
@@ -14,6 +18,12 @@ void cl_play_unskippable_cinematic_f() {
   // CL_PlayCinematic_f
   utils::hook::invoke<void>(0x4CC950);
   *game::cin_skippable = true;
+}
+
+void cl_start_multiplayer_f() {
+  utils::nt::update_dll_search_path(filesystem::get_binary_directory());
+  utils::nt::launch_process("iw4x.exe", "-multiplayer");
+  command::execute("quit", false);
 }
 } // namespace
 
@@ -65,6 +75,9 @@ private:
 
     // Allow intro to be skipped
     utils::hook::set<void (*)()>(0x47529F, cl_play_unskippable_cinematic_f);
+
+    // Start iw4x
+    utils::hook::set<void (*)()>(0x475327, cl_start_multiplayer_f);
 
     // Enable commandline arguments
     utils::hook::set<std::uint8_t>(0x453B24, 0xEB);

@@ -3,6 +3,7 @@
 namespace filesystem {
 std::vector<std::string> vectored_file_list(const std::string& path,
                                             const std::string& extension);
+std::string get_binary_directory();
 
 class file {
 public:

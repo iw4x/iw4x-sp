@@ -2,7 +2,9 @@
 #include "../loader/component_loader.hpp"
 
 #include <utils/hook.hpp>
+#include <utils/string.hpp>
 
+#include "game_module.hpp"
 #include "filesystem.hpp"
 
 namespace filesystem {
@@ -32,6 +34,11 @@ std::vector<std::string> vectored_file_list(const std::string& path,
   }
 
   return file_list;
+}
+
+std::string get_binary_directory() {
+  const auto dir = game_module::get_host_module().get_folder();
+  return utils::string::replace(dir, "/", "\\");
 }
 
 file::file(std::string name, game::FsThread thread) : name_(std::move(name)) {

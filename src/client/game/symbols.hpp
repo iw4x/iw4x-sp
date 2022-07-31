@@ -3,10 +3,14 @@
 #define WEAK __declspec(selectany)
 
 namespace game {
+// Com
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_Printf{0x41BD20};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintError{0x4C6980};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_DPrintf{0x42B1F0};
 WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
+
+// Sys
+WEAK symbol<void(const char* exeName)> Sys_QuitAndStartProcess{0x4D69A0};
 
 WEAK symbol<int(int localClientNum)> CL_IsCgameInitialized{0x4EEA50};
 
