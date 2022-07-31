@@ -116,6 +116,16 @@ WEAK symbol<void(const ScreenPlacement* scrPlace, const char* text,
                  int vertAlign, float scale, const float* color, int style)>
     UI_DrawText{0x40FC70};
 
+// PM
+WEAK symbol<void(pmove_t* pm, trace_t* results, const float* start,
+                 const float* end, const Bounds* bounds, int passEntityNum,
+                 int contentMask)>
+    PM_trace{0x4B7A20};
+WEAK symbol<void(pmove_t* pm, trace_t* results, const float* start,
+                 const float* end, const Bounds* bounds, int passEntityNum,
+                 int contentMask)>
+    PM_playerTrace{0x447B90};
+
 // IW functions, could use Microsoft specific functions but who cares
 WEAK symbol<int(const char* s0, const char* s1)> I_stricmp{0x409B80};
 WEAK symbol<int(const char* s0, const char* s1, int n)> I_strnicmp{0x491E60};

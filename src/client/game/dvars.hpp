@@ -7,6 +7,8 @@ extern const game::dvar_t* pm_bounce;
 extern const game::dvar_t* pm_bouncingAllAngles;
 extern const game::dvar_t* pm_rocketJump;
 extern const game::dvar_t* pm_rocketJumpScale;
+extern const game::dvar_t* pm_playerCollision;
+extern const game::dvar_t* pm_elevators;
 
 extern const game::dvar_t* cg_drawVersion;
 extern const game::dvar_t* cg_drawVersionX;

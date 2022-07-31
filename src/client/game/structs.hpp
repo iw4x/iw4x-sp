@@ -605,6 +605,73 @@ struct lockonFireParms {
   float targetPosOrOffset[3];
   bool topFire;
 };
+
+struct Bounds {
+  float midPoint[3];
+  float halfSize[3];
+};
+
+enum TraceHitType {
+  TRACE_HITTYPE_NONE = 0x0,
+  TRACE_HITTYPE_ENTITY = 0x1,
+  TRACE_HITTYPE_DYNENT_MODEL = 0x2,
+  TRACE_HITTYPE_DYNENT_BRUSH = 0x3,
+  TRACE_HITTYPE_GLASS = 0x4,
+};
+
+struct trace_t {
+  float fraction;
+  float normal[3];
+  int surfaceFlags;
+  int contents;
+  const char* material;
+  TraceHitType hitType;
+  unsigned __int16 hitId;
+  unsigned __int16 modelIndex;
+  unsigned __int16 partName;
+  unsigned __int16 partGroup;
+  bool allsolid;
+  bool startsolid;
+  bool walkable;
+};
+
+static_assert(sizeof(trace_t) == 0x2C);
+
+struct pml_t {
+  float forward[3];
+  float right[3];
+  float up[3];
+  float frametime;
+  int msec;
+  int walking;
+  int groundPlane;
+  trace_t groundTrace;
+  float impactSpeed;
+  float previous_origin[3];
+  float previous_velocity[3];
+  unsigned int holdrand;
+};
+
+static_assert(sizeof(pml_t) == 0x80);
+
+struct pmove_t {
+  playerState_s* ps;
+  usercmd_s cmd;
+  usercmd_s oldcmd;
+  int tracemask;
+  int numtouch;
+  int touchents[32];
+  Bounds bounds;
+  float xyspeed;
+  int proneChange;
+  int viewChangeTime;
+  float viewChange;
+  float fTorsoPitch;
+  float fWaistPitch;
+  unsigned char handler;
+};
+
+static_assert(sizeof(pmove_t) == 0x140);
 } // namespace game
 
 #pragma warning(pop)

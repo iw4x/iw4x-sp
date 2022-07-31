@@ -1,6 +1,8 @@
 #include <std_include.hpp>
 #include "../loader/component_loader.hpp"
 
+#include "game/dvars.hpp"
+
 #include <utils/string.hpp>
 #include <utils/hook.hpp>
 

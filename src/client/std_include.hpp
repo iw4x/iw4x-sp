@@ -47,5 +47,4 @@ using namespace std::literals;
 // clang-format off
 #include "game/structs.hpp"
 #include "game/game.hpp"
-#include "game/dvars.hpp"
 // clang-format on

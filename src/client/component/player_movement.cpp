@@ -1,6 +1,8 @@
 #include <std_include.hpp>
 #include "../loader/component_loader.hpp"
 
+#include "game/dvars.hpp"
+
 #include <utils/hook.hpp>
 
 namespace player_movement {
@@ -70,6 +72,42 @@ game::gentity_s* weapon_rocket_launcher_fire_stub(
 
   return result;
 }
+
+void cm_transformed_capsule_trace_stub(game::trace_t* results,
+                                       const float* start, const float* end,
+                                       const game::Bounds* bounds,
+                                       const game::Bounds* capsule,
+                                       int contents, const float* origin,
+                                       const float* angles) {
+  if (dvars::pm_playerCollision->current.enabled) {
+    utils::hook::invoke<void>(0x47C7D0, results, start, end, bounds, capsule,
+                              contents, origin, angles);
+  }
+}
+
+void pm_trace_stub(game::pmove_t* pm, game::trace_t* results,
+                   const float* start, const float* end,
+                   const game::Bounds* bounds, int pass_entity_num,
+                   int content_mask) {
+  game::PM_trace(pm, results, start, end, bounds, pass_entity_num,
+                 content_mask);
+  // Allow the player to stand even when there is no headroom
+  if (dvars::pm_elevators->current.enabled) {
+    results->allsolid = false;
+  }
+}
+
+void pm_player_trace_stub(game::pmove_t* pm, game::trace_t* results,
+                          const float* start, const float* end,
+                          const game::Bounds* bounds, int pass_entity_num,
+                          int content_mask) {
+  game::PM_playerTrace(pm, results, start, end, bounds, pass_entity_num,
+                       content_mask);
+
+  if (dvars::pm_elevators->current.enabled) {
+    results->startsolid = false;
+  }
+}
 } // namespace
 
 class component final : public component_interface {
@@ -89,6 +127,23 @@ public:
         .install()
         ->quick(); // FireWeapon
 
+    utils::hook(0x4B6FC0, cm_transformed_capsule_trace_stub, HOOK_CALL)
+        .install()
+        ->quick(); // SV_ClipMoveToEntity
+    utils::hook(0x57635F, cm_transformed_capsule_trace_stub, HOOK_CALL)
+        .install()
+        ->quick(); // CG_ClipMoveToEntity
+
+    utils::hook(0x64F439, pm_trace_stub, HOOK_CALL)
+        .install()
+        ->quick(); // PM_CheckDuck
+    utils::hook(0x651A60, pm_player_trace_stub, HOOK_CALL)
+        .install()
+        ->quick(); // PM_CorrectAllSolid
+    utils::hook(0x651AF2, pm_player_trace_stub, HOOK_CALL)
+        .install()
+        ->quick(); // PM_CorrectAllSolid
+
     register_dvars();
   }
 
@@ -102,6 +157,10 @@ public:
         "pm_rocketJump", true, game::DVAR_NONE, "CoD4 rocket jumps");
     dvars::pm_rocketJumpScale = game::Dvar_RegisterFloat(
         "pm_rocketJumpScale", 64.0f, 0.0f, 1024.0f, game::DVAR_NONE, "");
+    dvars::pm_playerCollision = game::Dvar_RegisterBool(
+         "pm_playerCollision", true, game::DVAR_NONE, "Push intersecting players away from each other");
+    dvars::pm_elevators = game::Dvar_RegisterBool(
+         "pm_elevators", false, game::DVAR_NONE, "CoD4 elevators");
     // clang-format on
   }
 };
