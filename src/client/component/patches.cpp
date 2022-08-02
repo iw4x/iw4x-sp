@@ -76,7 +76,7 @@ private:
     // Allow intro to be skipped
     utils::hook::set<void (*)()>(0x47529F, cl_play_unskippable_cinematic_f);
 
-    // Start iw4x
+    // Start IW4x
     utils::hook::set<void (*)()>(0x475327, cl_start_multiplayer_f);
 
     // Enable commandline arguments

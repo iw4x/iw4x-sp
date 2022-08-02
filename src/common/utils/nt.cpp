@@ -98,7 +98,7 @@ bool library::is_valid() const {
 
 std::string library::get_name() const {
   if (!this->is_valid())
-    return "";
+    return {};
 
   auto path = this->get_path();
   const auto pos = path.find_last_of("/\\");
