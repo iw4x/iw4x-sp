@@ -20,7 +20,7 @@ void main_handler() {
   params params;
 
   const auto command = utils::string::to_lower(params[0]);
-  if (!handlers.contains(command)) {
+  if (handlers.contains(command)) {
     handlers[command](params);
   }
 }
@@ -95,7 +95,7 @@ std::string params_sv::join(const int index) const {
   return result;
 }
 
-void add_raw(const char* name, void (*callback)(), int is_key) {
+void add_raw(const char* name, void (*callback)(), const int is_key) {
   assert(is_key == 0 || is_key == 1);
 
   game::Cmd_AddCommand(

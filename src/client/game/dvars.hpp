@@ -14,6 +14,8 @@ extern const game::dvar_t* cg_drawVersion;
 extern const game::dvar_t* cg_drawVersionX;
 extern const game::dvar_t* cg_drawVersionY;
 
+extern const game::dvar_t* bug_name;
+
 // Game dvars
 extern const game::dvar_t** g_specialops;
 

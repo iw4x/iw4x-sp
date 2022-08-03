@@ -72,4 +72,11 @@ bool ScrPlace_IsFullScreenActive() {
 ScreenPlacement* ScrPlace_GetUnsafeFullPlacement() {
   return scrPlaceFullUnsafe;
 }
+
+bool Sys_TryEnterCriticalSection(CriticalSection critSect) {
+  assert(static_cast<unsigned>(critSect) <
+         static_cast<unsigned>(CRITSECT_COUNT));
+
+  return TryEnterCriticalSection(&s_criticalSection[critSect]) != FALSE;
+}
 } // namespace game

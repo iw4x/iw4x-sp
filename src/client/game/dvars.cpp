@@ -14,6 +14,8 @@ const game::dvar_t* cg_drawVersion = nullptr;
 const game::dvar_t* cg_drawVersionX = nullptr;
 const game::dvar_t* cg_drawVersionY = nullptr;
 
+const game::dvar_t* bug_name = nullptr;
+
 // Game dvars
 const game::dvar_t** g_specialops =
     reinterpret_cast<const game::dvar_t**>(0x1B2E1E8);

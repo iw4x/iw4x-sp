@@ -36,6 +36,8 @@ void IN_KeyUp(kbutton_t* b);
 bool ScrPlace_IsFullScreenActive();
 ScreenPlacement* ScrPlace_GetUnsafeFullPlacement();
 
+bool Sys_TryEnterCriticalSection(CriticalSection critSect);
+
 // Global definitions
 constexpr auto CMD_MAX_NESTING = 8;
 

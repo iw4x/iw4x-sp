@@ -672,6 +672,29 @@ struct pmove_t {
 };
 
 static_assert(sizeof(pmove_t) == 0x140);
+
+enum ScopedCriticalSectionType {
+  SCOPED_CRITSECT_NORMAL = 0x0,
+  SCOPED_CRITSECT_DISABLED = 0x1,
+  SCOPED_CRITSECT_RELEASE = 0x2,
+  SCOPED_CRITSECT_TRY = 0x3,
+};
+
+enum CriticalSection {
+  CRITSECT_CONSOLE = 0x0,
+  CRITSECT_COUNT = 0x28,
+};
+
+struct TempPriority {
+  void* threadHandle;
+  int oldPriority;
+};
+
+struct FastCriticalSection {
+  volatile long readCount;
+  volatile long writeCount;
+  TempPriority tempPriority;
+};
 } // namespace game
 
 #pragma warning(pop)

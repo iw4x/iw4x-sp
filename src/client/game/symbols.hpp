@@ -8,9 +8,12 @@ WEAK symbol<void(int channel, const char* fmt, ...)> Com_Printf{0x41BD20};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintError{0x4C6980};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_DPrintf{0x42B1F0};
 WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
+WEAK symbol<void()> Com_OpenLogFile{0x603030};
 
 // Sys
 WEAK symbol<void(const char* exeName)> Sys_QuitAndStartProcess{0x4D69A0};
+WEAK symbol<void(CriticalSection critSect)> Sys_EnterCriticalSection{0x4A4CD0};
+WEAK symbol<void(CriticalSection critSect)> Sys_LeaveCriticalSection{0x4F78E0};
 
 WEAK symbol<int(int localClientNum)> CL_IsCgameInitialized{0x4EEA50};
 
@@ -107,6 +110,9 @@ WEAK symbol<const char**(const char* path, const char* extension,
     FS_ListFiles{0x4448F0};
 WEAK symbol<void(const char** list, int allocTrackType)> FS_FreeFileList{
     0x41C7A0};
+WEAK symbol<void(const char* base, const char* game, const char* qpath,
+                 char* ospath)>
+    FS_BuildOSPath{0x4E48F0};
 WEAK symbol<void(const char* gameName)> FS_Startup{0x47AF20};
 
 // UI
@@ -130,6 +136,9 @@ WEAK symbol<void(pmove_t* pm, trace_t* results, const float* start,
                  int contentMask)>
     PM_playerTrace{0x447B90};
 
+// Live
+WEAK symbol<const char*(int controllerIndex)> Live_GetLocalClientName{0x492EF0};
+
 // IW functions, could use Microsoft specific functions but who cares
 WEAK symbol<int(const char* s0, const char* s1)> I_stricmp{0x409B80};
 WEAK symbol<int(const char* s0, const char* s1, int n)> I_strnicmp{0x491E60};
@@ -151,6 +160,10 @@ WEAK symbol<float> g_console_char_height{0x732658};
 WEAK symbol<int> g_console_field_width{0x732654};
 WEAK symbol<ScreenPlacementMode> activeScreenPlacementMode{0x93AAF4};
 WEAK symbol<ScreenPlacement> scrPlaceFullUnsafe{0x93AB70};
+
+WEAK symbol<void*> logfile{0x145EC6C};
+
+WEAK symbol<RTL_CRITICAL_SECTION> s_criticalSection{0x19FBA28};
 
 WEAK symbol<void*> DB_GetXAssetSizeHandlers{0x733408};
 WEAK symbol<void*> DB_XAssetPool{0x7337F8};
