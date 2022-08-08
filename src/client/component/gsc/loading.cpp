@@ -4,54 +4,55 @@
 #include <utils/hook.hpp>
 #include <utils/string.hpp>
 
-#include "../filesystem.hpp"
-
 namespace gsc {
 namespace {
 std::vector<int> main_handles;
 std::vector<int> init_handles;
 
+// Do not use C++ objects because Scr_LoadScript may longjmp
 void g_scr_load_scripts_stub() {
   // Clear handles (from previous GSC loading session)
   main_handles.clear();
   init_handles.clear();
 
-  const auto file_list = filesystem::vectored_file_list("scripts/", "gsc");
+  char path[MAX_PATH]{};
 
-  for (const auto& file : file_list) {
-    std::string script = "scripts/" + file;
+  auto num_files = 0;
+  const auto** files =
+      game::FS_ListFiles("scripts/", "gsc", game::FS_LIST_ALL, &num_files, 10);
 
-    if (script.ends_with(".gsc")) {
-      // Scr_LoadScriptInternal will add the '.gsc' suffix
-      script = script.substr(0, script.size() - 4);
-    }
+  for (auto i = 0; i < num_files; ++i) {
+    const auto* script_file = files[i];
+    game::Com_Printf(game::CON_CHANNEL_SERVER, "Loading script %s...\n",
+                     script_file);
 
-    game::Com_Printf(game::CON_CHANNEL_SERVER, "Loading script %s.gsc...\n",
-                     script.data());
+    sprintf_s(path, "%s/%s", "scripts", script_file);
 
-    if (!game::Scr_LoadScript(script.data())) {
+    // Scr_LoadScriptInternal will add the '.gsc' suffix so we remove it
+    path[std::strlen(path) - 4] = '\0';
+
+    if (!game::Scr_LoadScript(path)) {
       game::Com_Printf(game::CON_CHANNEL_SERVER,
-                       "Script %s encountered an error while loading\n",
-                       script.data());
-      game::Com_Error(game::ERR_DROP, "Could not find script '%s'",
-                      script.data());
-      return;
+                       "Script %s encountered an error while loading\n", path);
+      continue;
     }
 
     game::Com_Printf(game::CON_CHANNEL_SERVER,
-                     "Script %s.gsc loaded successfully\n", script.data());
+                     "Script %s.gsc loaded successfully\n", path);
 
-    const auto main_handle = game::Scr_GetFunctionHandle(script.data(), "main");
+    const auto main_handle = game::Scr_GetFunctionHandle(path, "main");
     if (main_handle) {
       main_handles.push_back(main_handle);
     }
 
-    const auto init_handle = game::Scr_GetFunctionHandle(script.data(), "init");
+    const auto init_handle = game::Scr_GetFunctionHandle(path, "init");
     if (init_handle) {
       init_handles.push_back(init_handle);
     }
     // Allow scripts with no handles
   }
+
+  game::FS_FreeFileList(files, 10);
 }
 
 void scr_load_level_stub() {
