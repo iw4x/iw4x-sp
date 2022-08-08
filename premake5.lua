@@ -243,7 +243,8 @@ filter {}
 
 filter "configurations:Release"
 	optimize "Size"
-	buildoptions {"/Os"}
+	buildoptions {"/GL"}
+	linkoptions {"/IGNORE:4702", "/LTCG"}
 	defines {"NDEBUG"}
 	flags {"FatalCompileWarnings"}
 filter {}

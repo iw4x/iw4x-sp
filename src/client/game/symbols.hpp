@@ -60,13 +60,19 @@ WEAK symbol<const char*(const char* dvarName)> Dvar_GetString{0x411F50};
 // Script
 WEAK symbol<void(const char* error)> Scr_Error{0x4E9C50};
 WEAK symbol<void(const char* error)> Scr_ObjectError{0x470600};
+WEAK symbol<void(unsigned int paramIndex, const char* error)> Scr_ParamError{
+    0x42C880};
 
 WEAK symbol<unsigned int()> Scr_GetNumParam{0x4443F0};
 WEAK symbol<void()> Scr_ClearOutParams{0x4A3A00};
+WEAK symbol<const char*(unsigned int index)> Scr_GetTypeName{0x4CE240};
 WEAK symbol<const char*(unsigned int index)> Scr_GetString{0x4D39C0};
 WEAK symbol<unsigned int(unsigned int index)> Scr_GetConstString{0x4AF1B0};
 WEAK symbol<int(unsigned int index)> Scr_GetInt{0x454520};
 WEAK symbol<void(int value)> Scr_AddInt{0x4865B0};
+WEAK symbol<float(unsigned int index)> Scr_GetFloat{0x4AE590};
+WEAK symbol<void(float value)> Scr_AddFloat{0x4986E0};
+WEAK symbol<int(unsigned int index)> Scr_GetType{0x464EE0};
 WEAK symbol<void(int func, const char* name)> Scr_RegisterFunction{0x4F59C0};
 WEAK symbol<unsigned int(unsigned int index)> Scr_GetFunc{0x438E10};
 
