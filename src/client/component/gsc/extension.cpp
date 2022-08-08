@@ -105,7 +105,8 @@ public:
     add_function("Float", [] {
       switch (game::Scr_GetType(0)) {
       case 2:
-        game::Scr_AddFloat(static_cast<float>(atof(game::Scr_GetString(0))));
+        game::Scr_AddFloat(
+            static_cast<float>(std::atof(game::Scr_GetString(0))));
         break;
       case 5:
         game::Scr_AddFloat(game::Scr_GetFloat(0));
@@ -118,6 +119,13 @@ public:
                                                   game::Scr_GetTypeName(0)));
         break;
       }
+    });
+
+    add_function("IsEndStr", [] {
+      const auto* str = game::Scr_GetString(0);
+      const auto* suffix = game::Scr_GetString(1);
+
+      game::Scr_AddInt(utils::string::ends_with(str, suffix));
     });
   }
 
