@@ -46,7 +46,6 @@ FARPROC load_binary(const launcher::mode mode) {
     binary = "iw4sp.exe";
     break;
   case launcher::mode::none:
-  default:
     throw std::runtime_error("Invalid game mode!");
   }
 
@@ -102,7 +101,9 @@ int main() {
     });
 
     try {
+#ifdef CI
       apply_environment();
+#endif
 
       if (!component_loader::post_start())
         return 0;

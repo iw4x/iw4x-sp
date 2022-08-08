@@ -235,6 +235,10 @@ editandcontinue "Off"
 warnings "Extra"
 characterset "ASCII"
 
+if os.getenv("CI") then
+	defines {"CI"}
+end
+
 flags {"NoIncrementalLink", "NoMinimalRebuild", "MultiProcessorCompile", "No64BitChecks"}
 
 filter "platforms:Win*"
