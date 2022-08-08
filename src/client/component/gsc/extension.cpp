@@ -120,13 +120,6 @@ public:
         break;
       }
     });
-
-    add_function("IsEndStr", [] {
-      const auto* str = game::Scr_GetString(0);
-      const auto* suffix = game::Scr_GetString(1);
-
-      game::Scr_AddInt(utils::string::ends_with(str, suffix));
-    });
   }
 
   static void add_debug_functions() {
