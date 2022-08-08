@@ -81,6 +81,13 @@ private:
 
     // Enable commandline arguments
     utils::hook::set<std::uint8_t>(0x453B24, 0xEB);
+
+    // Rename config
+    utils::hook::set<const char*>(0x6040F2, CLIENT_CONFIG);
+    utils::hook::set<const char*>(0x602D38, CLIENT_CONFIG);
+    utils::hook::set<const char*>(0x6037C9, CLIENT_CONFIG);
+    utils::hook::set<const char*>(0x4D3FDB, CLIENT_CONFIG);
+    utils::hook::set<const char*>(0x469DB6, CLIENT_CONFIG);
   }
 };
 } // namespace patches
