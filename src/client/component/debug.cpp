@@ -39,7 +39,7 @@ void com_bug_f(const command::params& params) {
 
   if (*game::logfile) {
     game::FS_FCloseFile(*game::logfile);
-    *game::logfile = nullptr;
+    *game::logfile = 0;
   }
 
   game::FS_BuildOSPath(std::filesystem::current_path().string().data(), "",

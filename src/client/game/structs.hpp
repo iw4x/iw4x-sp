@@ -682,6 +682,8 @@ enum ScopedCriticalSectionType {
 
 enum CriticalSection {
   CRITSECT_CONSOLE = 0x0,
+  CRITSECT_LSP = 0x1A,
+  CRITSECT_CBUF = 0x21,
   CRITSECT_COUNT = 0x28,
 };
 

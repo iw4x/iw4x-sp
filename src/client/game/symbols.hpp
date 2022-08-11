@@ -105,11 +105,10 @@ WEAK symbol<void(XZoneInfo* zoneInfo, unsigned int zoneCount,
     DB_LoadXAssets{0x4CFC90};
 
 // FS
-WEAK symbol<void(void* buffer)> FS_FreeFile{0x4416B0};
-WEAK symbol<unsigned int(void* ptr, unsigned int len, void* stream)> FS_Read{
-    0x42EDC0};
-WEAK symbol<void(void* h)> FS_FCloseFile{0x44E0A0};
-WEAK symbol<int(const char* filename, void** file)> FS_FOpenFileRead{0x48DD10};
+WEAK symbol<int(const char* qpath, void** buffer)> _FS_ReadFile{0x4A5480};
+WEAK symbol<unsigned int(void* buffer, int len, int h)> FS_Read{0x42EDC0};
+WEAK symbol<void(int h)> FS_FCloseFile{0x44E0A0};
+WEAK symbol<int(const char* filename, int* file)> FS_FOpenFileRead{0x48DD10};
 WEAK symbol<const char**(const char* path, const char* extension,
                          FsListBehavior_e behavior, int* numfiles,
                          int allocTrackType)>
@@ -167,7 +166,7 @@ WEAK symbol<int> g_console_field_width{0x732654};
 WEAK symbol<ScreenPlacementMode> activeScreenPlacementMode{0x93AAF4};
 WEAK symbol<ScreenPlacement> scrPlaceFullUnsafe{0x93AB70};
 
-WEAK symbol<void*> logfile{0x145EC6C};
+WEAK symbol<int> logfile{0x145EC6C};
 
 WEAK symbol<RTL_CRITICAL_SECTION> s_criticalSection{0x19FBA28};
 

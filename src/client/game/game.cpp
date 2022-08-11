@@ -18,7 +18,7 @@ launcher::mode get_mode() {
 void set_mode(const launcher::mode _mode) { mode = _mode; }
 } // namespace environment
 
-int FS_FOpenFileReadForThread(const char* filename, void** file,
+int FS_FOpenFileReadForThread(const char* filename, int* file,
                               FsThread thread) {
   const static DWORD func = 0x630380;
   int answer{};

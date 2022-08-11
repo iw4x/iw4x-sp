@@ -27,7 +27,7 @@ private:
 // Functions that require asm stubs to be called
 // or have been inlined
 
-int FS_FOpenFileReadForThread(const char* filename, void** file,
+int FS_FOpenFileReadForThread(const char* filename, int* file,
                               FsThread thread);
 
 void IN_KeyDown(kbutton_t* b);

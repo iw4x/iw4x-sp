@@ -44,7 +44,7 @@ std::string get_binary_directory() {
 file::file(std::string name, game::FsThread thread) : name_(std::move(name)) {
   assert(!this->name_.empty());
 
-  void* handle;
+  int handle{};
   const auto len =
       game::FS_FOpenFileReadForThread(name_.data(), &handle, thread);
 
