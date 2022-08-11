@@ -5,6 +5,7 @@
 namespace game {
 // Com
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_Printf{0x41BD20};
+WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintWarning{0x4E0200};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintError{0x4C6980};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_DPrintf{0x42B1F0};
 WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
@@ -107,7 +108,10 @@ WEAK symbol<void(XZoneInfo* zoneInfo, unsigned int zoneCount,
 // FS
 WEAK symbol<int(const char* qpath, void** buffer)> _FS_ReadFile{0x4A5480};
 WEAK symbol<unsigned int(void* buffer, int len, int h)> FS_Read{0x42EDC0};
+WEAK symbol<int(const void* buffer, int len, int h)> FS_Write{0x449FA0};
 WEAK symbol<void(int h)> FS_FCloseFile{0x44E0A0};
+WEAK symbol<int(const char* qpath, int* f, fsMode_t mode)> FS_FOpenFileByMode{
+    0x41DF70};
 WEAK symbol<int(const char* filename, int* file)> FS_FOpenFileRead{0x48DD10};
 WEAK symbol<const char**(const char* path, const char* extension,
                          FsListBehavior_e behavior, int* numfiles,
@@ -167,6 +171,8 @@ WEAK symbol<ScreenPlacementMode> activeScreenPlacementMode{0x93AAF4};
 WEAK symbol<ScreenPlacement> scrPlaceFullUnsafe{0x93AB70};
 
 WEAK symbol<int> logfile{0x145EC6C};
+
+WEAK symbol<level_locals_t> level{0x10A7190};
 
 WEAK symbol<RTL_CRITICAL_SECTION> s_criticalSection{0x19FBA28};
 

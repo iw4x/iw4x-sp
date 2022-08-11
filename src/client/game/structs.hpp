@@ -124,6 +124,13 @@ enum FsListBehavior_e {
   FS_LIST_ALL = 0x1,
 };
 
+enum fsMode_t {
+  FS_READ = 0x0,
+  FS_WRITE = 0x1,
+  FS_APPEND = 0x2,
+  FS_APPEND_SYNC = 0x3,
+};
+
 struct cmd_function_s {
   cmd_function_s* next;
   const char* name;
@@ -385,7 +392,9 @@ struct client_t {
 static_assert(sizeof(client_t) == 0x1674);
 
 struct level_locals_t {
-  unsigned char __pad0[0x4780];
+  unsigned char __pad0[0x34];
+  int time;
+  unsigned char __pad1[0x4748];
 };
 
 static_assert(sizeof(level_locals_t) == 0x4780);
