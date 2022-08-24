@@ -25,8 +25,17 @@ private:
 };
 
 // Functions that require asm stubs to be called
-int FS_FOpenFileReadForThread(const char* filename, void** file,
-                              FsThread thread);
+// or have been inlined
+
+int FS_FOpenFileReadForThread(const char* filename, int* file, FsThread thread);
+
+void IN_KeyDown(kbutton_t* b);
+void IN_KeyUp(kbutton_t* b);
+
+bool ScrPlace_IsFullScreenActive();
+ScreenPlacement* ScrPlace_GetUnsafeFullPlacement();
+
+bool Sys_TryEnterCriticalSection(CriticalSection critSect);
 
 // Global definitions
 constexpr auto CMD_MAX_NESTING = 8;

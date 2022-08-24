@@ -98,7 +98,7 @@ bool library::is_valid() const {
 
 std::string library::get_name() const {
   if (!this->is_valid())
-    return "";
+    return {};
 
   auto path = this->get_path();
   const auto pos = path.find_last_of("/\\");
@@ -181,14 +181,25 @@ void** library::get_iat_entry(const std::string& module_name,
         ++original_thunk_data;
         ++thunk_data;
       }
-
-      // break;
     }
 
     ++import_descriptor;
   }
 
   return nullptr;
+}
+
+void library::set_dll_directory(const std::string& directory) {
+  SetDllDirectoryA(directory.data());
+}
+
+std::string library::get_dll_directory() {
+  char directory[MAX_PATH] = {0};
+  if (!GetDllDirectoryA(sizeof(directory), directory)) {
+    return {};
+  }
+
+  return directory;
 }
 
 void raise_hard_exception() {
@@ -211,9 +222,8 @@ std::string load_resource(const int id) {
   return std::string(LPSTR(LockResource(handle)), SizeofResource(nullptr, res));
 }
 
-void relaunch_self() {
-  const library self;
-
+void launch_process(const std::string& process,
+                    const std::string& command_line) {
   STARTUPINFOA startup_info;
   PROCESS_INFORMATION process_info;
 
@@ -223,15 +233,25 @@ void relaunch_self() {
 
   char current_dir[MAX_PATH];
   GetCurrentDirectoryA(sizeof(current_dir), current_dir);
-  auto* const command_line = GetCommandLineA();
 
-  CreateProcessA(self.get_path().data(), command_line, nullptr, nullptr, false,
-                 NULL, nullptr, current_dir, &startup_info, &process_info);
+  CreateProcessA(process.data(), const_cast<char*>(command_line.data()),
+                 nullptr, nullptr, false, NULL, nullptr, current_dir,
+                 &startup_info, &process_info);
 
   if (process_info.hThread && process_info.hThread != INVALID_HANDLE_VALUE)
     CloseHandle(process_info.hThread);
   if (process_info.hProcess && process_info.hProcess != INVALID_HANDLE_VALUE)
     CloseHandle(process_info.hProcess);
+}
+
+void relaunch_self(const std::string& command_line) {
+  const library self;
+  launch_process(self.get_path(), command_line);
+}
+
+void update_dll_search_path(const std::string& directory) {
+  const library self;
+  self.set_dll_directory(directory);
 }
 
 void terminate(const uint32_t code) {

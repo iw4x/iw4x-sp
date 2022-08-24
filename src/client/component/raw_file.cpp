@@ -8,7 +8,7 @@ namespace {
 utils::hook::detour db_read_raw_file_hook;
 
 char* db_read_raw_file_stub(const char* filename, char* buf, int size) {
-  void* file_handle{};
+  int file_handle{};
   auto file_size = game::FS_FOpenFileRead(filename, &file_handle);
 
   if (file_handle != 0) {

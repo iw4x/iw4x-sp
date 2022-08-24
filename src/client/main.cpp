@@ -13,7 +13,7 @@
 
 DECLSPEC_NORETURN void WINAPI exit_hook(const int code) {
   component_loader::pre_destroy();
-  exit(code);
+  std::exit(code);
 }
 
 launcher::mode detect_mode_from_arguments() {
@@ -46,7 +46,6 @@ FARPROC load_binary(const launcher::mode mode) {
     binary = "iw4sp.exe";
     break;
   case launcher::mode::none:
-  default:
     throw std::runtime_error("Invalid game mode!");
   }
 
@@ -60,8 +59,6 @@ FARPROC load_binary(const launcher::mode mode) {
 
   return loader.load(self, data);
 }
-
-void remove_crash_file() { utils::io::remove_file("__iw4x-sp"); }
 
 void enable_dpi_awareness() {
   const utils::nt::library user32{"user32.dll"};
@@ -104,8 +101,9 @@ int main() {
     });
 
     try {
+#ifdef CI
       apply_environment();
-      remove_crash_file();
+#endif
 
       if (!component_loader::post_start())
         return 0;

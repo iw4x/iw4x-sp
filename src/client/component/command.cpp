@@ -20,7 +20,7 @@ void main_handler() {
   params params;
 
   const auto command = utils::string::to_lower(params[0]);
-  if (!handlers.contains(command)) {
+  if (handlers.contains(command)) {
     handlers[command](params);
   }
 }
@@ -95,16 +95,18 @@ std::string params_sv::join(const int index) const {
   return result;
 }
 
-void add_raw(const char* name, void (*callback)()) {
+void add_raw(const char* name, void (*callback)(), const int is_key) {
+  assert(is_key == 0 || is_key == 1);
+
   game::Cmd_AddCommand(
       name, callback,
-      utils::memory::get_allocator()->allocate<game::cmd_function_t>());
+      utils::memory::get_allocator()->allocate<game::cmd_function_s>(), is_key);
 }
 
 void add(const char* name, const std::function<void(const params&)>& callback) {
   const auto command = utils::string::to_lower(name);
 
-  if (handlers.find(command) == handlers.end()) {
+  if (!handlers.contains(command)) {
     add_raw(name, main_handler);
   }
 
@@ -136,6 +138,7 @@ void execute(std::string command, const bool sync) {
 
 class component final : public component_interface {
 public:
+  static_assert(sizeof(game::cmd_function_s) == 0x18);
   static_assert(offsetof(game::gentity_s, client) == 0x108);
 
   void post_load() override {

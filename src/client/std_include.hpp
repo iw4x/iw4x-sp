@@ -7,6 +7,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #define BASEGAME "spdata"
+#define CLIENT_CONFIG "iw4xsp_config.cfg"
 
 #include <WinSock2.h>
 #include <Windows.h>
@@ -47,5 +48,4 @@ using namespace std::literals;
 // clang-format off
 #include "game/structs.hpp"
 #include "game/game.hpp"
-#include "game/dvars.hpp"
 // clang-format on

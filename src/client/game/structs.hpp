@@ -119,8 +119,20 @@ enum FsThread {
   FS_THREAD_INVALID = 0x6,
 };
 
-struct cmd_function_t {
-  cmd_function_t* next;
+enum FsListBehavior_e {
+  FS_LIST_PURE_ONLY = 0x0,
+  FS_LIST_ALL = 0x1,
+};
+
+enum fsMode_t {
+  FS_READ = 0x0,
+  FS_WRITE = 0x1,
+  FS_APPEND = 0x2,
+  FS_APPEND_SYNC = 0x3,
+};
+
+struct cmd_function_s {
+  cmd_function_s* next;
   const char* name;
   const char* autoCompleteDir;
   const char* autoCompleteExt;
@@ -325,8 +337,24 @@ struct XZoneInfo {
   int freeFlags;
 };
 
+struct playerState_s {
+  int commandTime;
+  int pm_type;
+  int pm_time;
+  int pm_flags;
+  int otherFlags;
+  int linkFlags;
+  int bobCycle;
+  float origin[3];
+  float velocity[3];
+  unsigned char __pad0[0xAC70];
+};
+
+static_assert(sizeof(playerState_s) == 0xACA4);
+
 struct gclient_s {
-  unsigned char __pad0[0xAD54];
+  playerState_s ps;
+  unsigned char __pad0[0xB0];
   int flags; // 0xAD54
   unsigned char __pad1[0x27C];
 };
@@ -364,7 +392,9 @@ struct client_t {
 static_assert(sizeof(client_t) == 0x1674);
 
 struct level_locals_t {
-  unsigned char __pad0[0x4780];
+  unsigned char __pad0[0x34];
+  int time;
+  unsigned char __pad1[0x4748];
 };
 
 static_assert(sizeof(level_locals_t) == 0x4780);
@@ -503,6 +533,178 @@ struct Console {
 
 enum {
   KEYCATCH_CONSOLE = 0x1,
+};
+
+enum ScreenPlacementMode {
+  SCRMODE_FULL = 0x0,
+  SCRMODE_DISPLAY = 0x1,
+  SCRMODE_INVALID = 0x2,
+  SCRMODE_COUNT = 0x3,
+};
+
+struct ScreenPlacement {
+  float scaleVirtualToReal[2];
+  float scaleVirtualToFull[2];
+  float scaleRealToVirtual[2];
+  float realViewportPosition[2];
+  float realViewportSize[2];
+  float virtualViewableMin[2];
+  float virtualViewableMax[2];
+  float realViewableMin[2];
+  float realViewableMax[2];
+  float virtualAdjustableMin[2];
+  float virtualAdjustableMax[2];
+  float realAdjustableMin[2];
+  float realAdjustableMax[2];
+  float subScreenLeft;
+};
+
+enum usercmdButtonBits {
+  CMD_BUTTON_LEAN_LEFT = 0x40,
+  CMD_BUTTON_LEAN_RIGHT = 0x80,
+};
+
+struct kbutton_t {
+  int down[2];
+  unsigned int downtime;
+  unsigned int msec;
+  bool active;
+  bool wasPressed;
+};
+
+struct usercmd_s {
+  int serverTime;
+  int buttons;
+  int angles[3];
+  unsigned __int16 weapon;
+  unsigned __int16 primaryWeaponForAltMode;
+  unsigned __int16 offHandIndex;
+  char forwardmove;
+  char rightmove;
+  unsigned char upmove;
+  unsigned char downmove;
+  char pitchmove;
+  char yawmove;
+  float gunPitch;
+  float gunYaw;
+  float gunXOfs;
+  float gunYOfs;
+  float gunZOfs;
+  float meleeChargeYaw;
+  unsigned char meleeChargeDist;
+  char selectedLoc[2];
+  unsigned char selectedLocAngle;
+  char remoteControlAngles[2];
+};
+
+struct weaponParms {
+  float forward[3];
+  float right[3];
+  float up[3];
+  float muzzleTrace[3];
+  float gunForward[3];
+  unsigned int weaponIndex;
+  const void* weapDef;
+  const void* weapCompleteDef;
+};
+
+struct lockonFireParms {
+  bool lockon;
+  gentity_s* target;
+  float targetPosOrOffset[3];
+  bool topFire;
+};
+
+struct Bounds {
+  float midPoint[3];
+  float halfSize[3];
+};
+
+enum TraceHitType {
+  TRACE_HITTYPE_NONE = 0x0,
+  TRACE_HITTYPE_ENTITY = 0x1,
+  TRACE_HITTYPE_DYNENT_MODEL = 0x2,
+  TRACE_HITTYPE_DYNENT_BRUSH = 0x3,
+  TRACE_HITTYPE_GLASS = 0x4,
+};
+
+struct trace_t {
+  float fraction;
+  float normal[3];
+  int surfaceFlags;
+  int contents;
+  const char* material;
+  TraceHitType hitType;
+  unsigned __int16 hitId;
+  unsigned __int16 modelIndex;
+  unsigned __int16 partName;
+  unsigned __int16 partGroup;
+  bool allsolid;
+  bool startsolid;
+  bool walkable;
+};
+
+static_assert(sizeof(trace_t) == 0x2C);
+
+struct pml_t {
+  float forward[3];
+  float right[3];
+  float up[3];
+  float frametime;
+  int msec;
+  int walking;
+  int groundPlane;
+  trace_t groundTrace;
+  float impactSpeed;
+  float previous_origin[3];
+  float previous_velocity[3];
+  unsigned int holdrand;
+};
+
+static_assert(sizeof(pml_t) == 0x80);
+
+struct pmove_t {
+  playerState_s* ps;
+  usercmd_s cmd;
+  usercmd_s oldcmd;
+  int tracemask;
+  int numtouch;
+  int touchents[32];
+  Bounds bounds;
+  float xyspeed;
+  int proneChange;
+  int viewChangeTime;
+  float viewChange;
+  float fTorsoPitch;
+  float fWaistPitch;
+  unsigned char handler;
+};
+
+static_assert(sizeof(pmove_t) == 0x140);
+
+enum ScopedCriticalSectionType {
+  SCOPED_CRITSECT_NORMAL = 0x0,
+  SCOPED_CRITSECT_DISABLED = 0x1,
+  SCOPED_CRITSECT_RELEASE = 0x2,
+  SCOPED_CRITSECT_TRY = 0x3,
+};
+
+enum CriticalSection {
+  CRITSECT_CONSOLE = 0x0,
+  CRITSECT_LSP = 0x1A,
+  CRITSECT_CBUF = 0x21,
+  CRITSECT_COUNT = 0x28,
+};
+
+struct TempPriority {
+  void* threadHandle;
+  int oldPriority;
+};
+
+struct FastCriticalSection {
+  volatile long readCount;
+  volatile long writeCount;
+  TempPriority tempPriority;
 };
 } // namespace game
 

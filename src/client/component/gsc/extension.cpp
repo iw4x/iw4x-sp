@@ -75,7 +75,7 @@ void add_method(const char* name, game::BuiltinMethod func, bool type) {
   custom_scr_meths.emplace(utils::string::to_lower(name), def);
 }
 
-class component final : public component_interface {
+class extension final : public component_interface {
 public:
   void post_load() override {
     // Fetch custom functions
@@ -101,6 +101,25 @@ public:
 
       game::Scr_AddInt(result);
     });
+
+    add_function("Float", [] {
+      switch (game::Scr_GetType(0)) {
+      case 2:
+        game::Scr_AddFloat(
+            static_cast<float>(std::atof(game::Scr_GetString(0))));
+        break;
+      case 5:
+        game::Scr_AddFloat(game::Scr_GetFloat(0));
+        break;
+      case 6:
+        game::Scr_AddFloat(static_cast<float>(game::Scr_GetInt(0)));
+        break;
+      default:
+        game::Scr_ParamError(0, utils::string::va("cannot cast %s to float",
+                                                  game::Scr_GetTypeName(0)));
+        break;
+      }
+    });
   }
 
   static void add_debug_functions() {
@@ -110,4 +129,4 @@ public:
 };
 } // namespace gsc
 
-REGISTER_COMPONENT(gsc::component)
+REGISTER_COMPONENT(gsc::extension)
