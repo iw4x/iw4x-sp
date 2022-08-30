@@ -91,10 +91,10 @@ bool interface::is_rdata(void* pointer) {
     std::memcpy(name, section->Name, size);
 
     if (name == ".rdata"s) {
-      const auto target = size_t(pointer);
-      const size_t source_start =
-          size_t(pointer_lib.get_ptr()) + section->PointerToRawData;
-      const size_t source_end = source_start + section->SizeOfRawData;
+      const auto target = std::size_t(pointer);
+      const std::size_t source_start =
+          std::size_t(pointer_lib.get_ptr()) + section->PointerToRawData;
+      const std::size_t source_end = source_start + section->SizeOfRawData;
 
       return target >= source_start && target <= source_end;
     }

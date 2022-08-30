@@ -86,6 +86,11 @@ void callbacks::run_callbacks() {
 }
 
 std::string get_steam_install_directory() {
+  static std::string install_path{};
+  if (!install_path.empty()) {
+    return install_path;
+  }
+
   HKEY reg_key;
   if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Valve\\Steam", 0,
                     KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS) {
@@ -95,15 +100,10 @@ std::string get_steam_install_directory() {
                      reinterpret_cast<BYTE*>(path), &length);
     RegCloseKey(reg_key);
 
-    std::string steam_path = path;
-    if (steam_path.back() != '\\' && steam_path.back() != '/') {
-      steam_path.push_back('\\');
-    }
-
-    return steam_path;
+    install_path = path;
   }
 
-  return {};
+  return install_path;
 }
 
 extern "C" {
