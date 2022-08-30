@@ -65,7 +65,7 @@ private:
   void* steam_pipe_ = nullptr;
   void* global_user_ = nullptr;
 
-  void* load_client_engine() const {
+  [[nodiscard]] void* load_client_engine() const {
     if (!this->steam_client_module_)
       return nullptr;
 
@@ -82,15 +82,14 @@ private:
   }
 
   void load_client() {
-    const std::filesystem::path steam_path =
-        ::steam::get_steam_install_directory();
+    const std::string steam_path = steam::get_steam_install_directory();
     if (steam_path.empty())
       return;
 
-    utils::nt::library::load(steam_path / "tier0_s.dll");
-    utils::nt::library::load(steam_path / "vstdlib_s.dll");
+    utils::nt::library::load(steam_path + "tier0_s.dll");
+    utils::nt::library::load(steam_path + "vstdlib_s.dll");
     this->steam_client_module_ =
-        utils::nt::library::load(steam_path / "steamclient.dll");
+        utils::nt::library::load(steam_path + "steamclient.dll");
     if (!this->steam_client_module_)
       return;
 
@@ -104,16 +103,11 @@ private:
         "Steam_ConnectToGlobalUser", this->steam_pipe_);
     this->client_user_ = this->client_engine_.invoke<void*>(
         8, this->steam_pipe_, this->global_user_); // GetIClientUser
-#ifdef _DEBUG
     this->client_utils_ = this->client_engine_.invoke<void*>(
         14, this->steam_pipe_); // GetIClientUtils
-#else
-    this->client_utils_ = this->client_engine_.invoke<void*>(
-        13, this->steam_pipe_); // GetIClientUtils
-#endif
   }
 
-  void start_mod(const std::string& title, const size_t app_id) {
+  void start_mod(const std::string& title, const std::size_t app_id) {
     __try {
       this->start_mod_unsafe(title, app_id);
     } __except (EXCEPTION_EXECUTE_HANDLER) {
@@ -121,7 +115,7 @@ private:
     }
   }
 
-  void start_mod_unsafe(const std::string& title, size_t app_id) {
+  void start_mod_unsafe(const std::string& title, std::size_t app_id) {
     if (!this->client_utils_ || !this->client_user_)
       return;
 

@@ -4,10 +4,10 @@
 namespace steam {
 ::utils::nt::library overlay(nullptr);
 
-uint64_t callbacks::call_id_ = 0;
+std::uint64_t callbacks::call_id_ = 0;
 std::recursive_mutex callbacks::mutex_;
-std::map<uint64_t, bool> callbacks::calls_;
-std::map<uint64_t, callbacks::base*> callbacks::result_handlers_;
+std::map<std::uint64_t, bool> callbacks::calls_;
+std::map<std::uint64_t, callbacks::base*> callbacks::result_handlers_;
 std::vector<callbacks::result> callbacks::results_;
 std::vector<callbacks::base*> callbacks::callback_list_;
 
@@ -23,9 +23,29 @@ void callbacks::register_callback(base* handler, const int callback) {
   callback_list_.push_back(handler);
 }
 
+void callbacks::unregister_callback(base* handler) {
+  std::lock_guard _(mutex_);
+  for (auto i = callback_list_.begin(); i != callback_list_.end();) {
+    if (*i == handler) {
+      i = callback_list_.erase(i);
+    } else {
+      ++i;
+    }
+  }
+}
+
 void callbacks::register_call_result(const uint64_t call, base* result) {
   std::lock_guard _(mutex_);
   result_handlers_[call] = result;
+}
+
+void callbacks::unregister_call_result(const uint64_t call,
+                                       [[maybe_unused]] base* result) {
+  std::lock_guard _(mutex_);
+  const auto i = result_handlers_.find(call);
+  if (i != result_handlers_.end()) {
+    result_handlers_.erase(i);
+  }
 }
 
 void callbacks::return_call(void* data, const int size, const int type,
@@ -47,7 +67,7 @@ void callbacks::run_callbacks() {
   std::lock_guard _(mutex_);
 
   for (const auto& result : results_) {
-    if (result_handlers_.find(result.call) != result_handlers_.end()) {
+    if (result_handlers_.contains(result.call)) {
       result_handlers_[result.call]->run(result.data, false, result.call);
     }
 
@@ -58,7 +78,7 @@ void callbacks::run_callbacks() {
     }
 
     if (result.data) {
-      free(result.data);
+      std::free(result.data);
     }
   }
 
@@ -66,6 +86,11 @@ void callbacks::run_callbacks() {
 }
 
 std::string get_steam_install_directory() {
+  static std::string install_path{};
+  if (!install_path.empty()) {
+    return install_path;
+  }
+
   HKEY reg_key;
   if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Valve\\Steam", 0,
                     KEY_QUERY_VALUE, &reg_key) == ERROR_SUCCESS) {
@@ -75,15 +100,10 @@ std::string get_steam_install_directory() {
                      reinterpret_cast<BYTE*>(path), &length);
     RegCloseKey(reg_key);
 
-    std::string steam_path = path;
-    if (steam_path.back() != '\\' && steam_path.back() != '/') {
-      steam_path.push_back('\\');
-    }
-
-    return steam_path;
+    install_path = path;
   }
 
-  return {};
+  return install_path;
 }
 
 extern "C" {
@@ -115,9 +135,14 @@ void SteamAPI_RunCallbacks() { callbacks::run_callbacks(); }
 
 void SteamAPI_Shutdown() {}
 
-void SteamAPI_UnregisterCallResult() {}
+void SteamAPI_UnregisterCallResult(callbacks::base* result,
+                                   const std::uint64_t call) {
+  callbacks::unregister_call_result(call, result);
+}
 
-void SteamAPI_UnregisterCallback() {}
+void SteamAPI_UnregisterCallback(callbacks::base* handler) {
+  callbacks::unregister_callback(handler);
+}
 
 bool SteamGameServer_Init() { return true; }
 
