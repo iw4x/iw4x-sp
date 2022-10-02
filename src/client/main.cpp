@@ -101,9 +101,7 @@ int main() {
     });
 
     try {
-#ifdef CI
       apply_environment();
-#endif
 
       if (!component_loader::post_start())
         return 0;

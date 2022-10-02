@@ -16,7 +16,9 @@ WEAK symbol<void(const char* exeName)> Sys_QuitAndStartProcess{0x4D69A0};
 WEAK symbol<void(CriticalSection critSect)> Sys_EnterCriticalSection{0x4A4CD0};
 WEAK symbol<void(CriticalSection critSect)> Sys_LeaveCriticalSection{0x4F78E0};
 
+// CL
 WEAK symbol<int(int localClientNum)> CL_IsCgameInitialized{0x4EEA50};
+WEAK symbol<void()> CL_CoOpConnect{0x57D240};
 
 WEAK symbol<WeaponCompleteDef*(const char* name, const char* folder)>
     BG_LoadWeaponVariantDefInternal{0x4F5AF0};
