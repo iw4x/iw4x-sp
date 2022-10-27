@@ -50,10 +50,8 @@ HRESULT doc_host_ui_handler::ResizeBorder(LPCRECT /*prcBorder*/,
   return S_OK;
 }
 
-HRESULT doc_host_ui_handler::TranslateAcceleratorA(LPMSG /*lpMsg*/,
-                                                   const GUID* pguidCmdGroup,
-                                                   DWORD /*nCmdID*/) {
-  pguidCmdGroup = nullptr;
+HRESULT doc_host_ui_handler::TranslateAcceleratorA(
+    LPMSG /*lpMsg*/, const GUID* /*pguidCmdGroup*/, DWORD /*nCmdID*/) {
   return S_FALSE;
 }
 
