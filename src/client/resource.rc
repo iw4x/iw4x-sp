@@ -87,8 +87,6 @@ END
 
 ID_ICON               ICON   "resources/icon.ico"
 
-MENU_MAIN             RCDATA "resources/main.html"
-
 #ifdef _DEBUG
 TLS_DLL               RCDATA "../../build/bin/Win32/Debug/tlsdll.dll"
 #else

@@ -11,20 +11,6 @@
 
 #include <WinSock2.h>
 #include <Windows.h>
-#include <MsHTML.h>
-#include <MsHtmHst.h>
-#include <ExDisp.h>
-#include <WS2tcpip.h>
-#include <corecrt_io.h>
-#include <fcntl.h>
-#include <shellapi.h>
-#include <ShlObj.h>
-#include <winternl.h>
-#include <VersionHelpers.h>
-#include <Psapi.h>
-#include <urlmon.h>
-#include <atlbase.h>
-#include <iphlpapi.h>
 
 #include <algorithm>
 #include <cassert>

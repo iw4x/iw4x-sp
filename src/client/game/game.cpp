@@ -1,23 +1,6 @@
 #include <std_include.hpp>
 
 namespace game {
-namespace environment {
-launcher::mode mode = launcher::mode::none;
-
-bool is_sp() { return get_mode() == launcher::mode::singleplayer; }
-
-launcher::mode get_mode() {
-  if (mode == launcher::mode::none) {
-    throw std::runtime_error(
-        "Launcher mode not valid. Something must be wrong.");
-  }
-
-  return mode;
-}
-
-void set_mode(const launcher::mode _mode) { mode = _mode; }
-} // namespace environment
-
 int FS_FOpenFileReadForThread(const char* filename, int* file,
                               FsThread thread) {
   const static DWORD func = 0x630380;
@@ -74,8 +57,8 @@ ScreenPlacement* ScrPlace_GetUnsafeFullPlacement() {
 }
 
 bool Sys_TryEnterCriticalSection(CriticalSection critSect) {
-  assert(static_cast<unsigned>(critSect) <
-         static_cast<unsigned>(CRITSECT_COUNT));
+  assert(static_cast<std::uint32_t>(critSect) <
+         static_cast<std::uint32_t>(CRITSECT_COUNT));
 
   return TryEnterCriticalSection(&s_criticalSection[critSect]) != FALSE;
 }

@@ -1,14 +1,6 @@
 #pragma once
 
-#include <launcher/launcher.hpp>
-
 namespace game {
-namespace environment {
-bool is_sp();
-
-launcher::mode get_mode();
-void set_mode(launcher::mode mode);
-} // namespace environment
 
 template <typename T> class symbol {
 public:
