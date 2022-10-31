@@ -20,14 +20,13 @@ const game::dvar_t* dvar_register_name(const char* dvar_name, const char* value,
 class component final : public component_interface {
 public:
   void post_start() override {
-    dvar::override::dvar_register_bool("intro", true, game::DVAR_NONE);
-    dvar::override::dvar_register_float("cg_fov", 65.0f, 65.0f, 160.0f,
-                                        game::DVAR_ARCHIVE);
-    dvar::override::dvar_register_string("fs_basegame", BASEGAME,
-                                         game::DVAR_INIT);
+    dvar::override::register_bool("intro", true, game::DVAR_NONE);
+    dvar::override::register_float("cg_fov", 65.0f, 65.0f, 160.0f,
+                                   game::DVAR_ARCHIVE);
+    dvar::override::register_string("fs_basegame", BASEGAME, game::DVAR_INIT);
 
 #ifdef _DEBUG
-    dvar::override::dvar_register_bool("sv_cheats", true, game::DVAR_NONE);
+    dvar::override::register_bool("sv_cheats", true, game::DVAR_NONE);
 #endif
   }
 

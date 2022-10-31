@@ -48,7 +48,7 @@ public:
 
   void post_start() override {
     // Prevents console from opening
-    dvar::override::dvar_register_bool("monkeytoy", false, game::DVAR_NONE);
+    dvar::override::register_bool("monkeytoy", false, game::DVAR_NONE);
   }
 
   void post_load() override {
