@@ -308,8 +308,54 @@ struct RawFile {
   const char* buffer;
 };
 
+struct G_GlassPiece {
+  unsigned __int16 damageTaken;
+  unsigned __int16 collapseTime;
+  int lastStateChangeTime;
+  char impactDir;
+  char impactPos[2];
+};
+
+static_assert(sizeof(G_GlassPiece) == 0xC);
+
+struct G_GlassName {
+  char* nameStr;
+  unsigned __int16 name;
+  unsigned __int16 pieceCount;
+  unsigned __int16* pieceIndices;
+};
+
+static_assert(sizeof(G_GlassName) == 0xC);
+
+struct G_GlassData {
+  G_GlassPiece* glassPieces;
+  unsigned int pieceCount;
+  unsigned __int16 damageToWeaken;
+  unsigned __int16 damageToDestroy;
+  unsigned int glassNameCount;
+  G_GlassName* glassNames;
+  unsigned __int8 pad[108];
+};
+
+static_assert(sizeof(G_GlassData) == 0x80);
+
+struct GameWorldMp {
+  const char* name;
+  G_GlassData* g_glassData;
+};
+
+struct GameWorldSp {
+  const char* name;
+  unsigned char __pad0[0x30];
+  G_GlassData* g_glassData;
+};
+
+static_assert(sizeof(GameWorldSp) == 0x38);
+
 union XAssetHeader {
   void* data;
+  GameWorldSp* gameWorldSp;
+  GameWorldMp* gameWorldMp;
   Font_s* font;
   WeaponCompleteDef* weapon;
   RawFile* rawfile;
@@ -398,50 +444,6 @@ struct level_locals_t {
 };
 
 static_assert(sizeof(level_locals_t) == 0x4780);
-
-struct G_GlassPiece {
-  unsigned __int16 damageTaken;
-  unsigned __int16 collapseTime;
-  int lastStateChangeTime;
-  char impactDir;
-  char impactPos[2];
-};
-
-static_assert(sizeof(G_GlassPiece) == 0xC);
-
-struct G_GlassName {
-  char* nameStr;
-  unsigned __int16 name;
-  unsigned __int16 pieceCount;
-  unsigned __int16* pieceIndices;
-};
-
-static_assert(sizeof(G_GlassName) == 0xC);
-
-struct G_GlassData {
-  G_GlassPiece* glassPieces;
-  unsigned int pieceCount;
-  unsigned __int16 damageToWeaken;
-  unsigned __int16 damageToDestroy;
-  unsigned int glassNameCount;
-  G_GlassName* glassNames;
-  unsigned __int8 pad[108];
-};
-
-static_assert(sizeof(G_GlassData) == 0x80);
-
-struct GameWorldMp {
-  const char* name;
-  G_GlassData* g_glassData;
-};
-
-struct GameWorldSp {
-  const char* name;
-  unsigned char __pad0[0x30];
-  G_GlassData* g_glassData;
-};
-
-static_assert(sizeof(GameWorldSp) == 0x38);
 
 struct field_t {
   int cursor;
