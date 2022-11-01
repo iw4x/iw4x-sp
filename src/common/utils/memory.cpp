@@ -48,7 +48,9 @@ char* memory::allocator::duplicate_string(const std::string& string) {
   return data;
 }
 
-void* memory::allocate(const std::size_t length) { return std::calloc(length, 1); }
+void* memory::allocate(const std::size_t length) {
+  return std::calloc(length, 1);
+}
 
 char* memory::duplicate_string(const std::string& string) {
   const auto new_string = allocate_array<char>(string.size() + 1);
@@ -119,7 +121,8 @@ bool memory::is_rdata_ptr(void* ptr) {
 
     if (name == rdata) {
       const auto target = reinterpret_cast<std::size_t>(ptr);
-      const auto source_start = size_t(pointer_lib.get_ptr()) + section->PointerToRawData;
+      const auto source_start =
+          size_t(pointer_lib.get_ptr()) + section->PointerToRawData;
       const auto source_end = source_start + section->SizeOfRawData;
 
       return target >= source_start && target <= source_end;
