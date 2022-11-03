@@ -107,6 +107,8 @@ WEAK symbol<void(RawFile* rawfile, char* buffer, int size)> DB_GetRawBuffer{
 WEAK symbol<void(XZoneInfo* zoneInfo, unsigned int zoneCount,
                  unsigned int syncMode)>
     DB_LoadXAssets{0x4CFC90};
+WEAK symbol<char*(const char* filename, char* buf, int size)> DB_ReadRawFile{
+    0x46DA60};
 
 // FS
 WEAK symbol<int(const char* qpath, void** buffer)> _FS_ReadFile{0x4A5480};

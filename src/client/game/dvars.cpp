@@ -22,6 +22,9 @@ const game::dvar_t* g_log = nullptr;
 const game::dvar_t** g_specialops =
     reinterpret_cast<const game::dvar_t**>(0x1B2E1E8);
 
+const game::dvar_t** sv_mapname =
+    reinterpret_cast<const game::dvar_t**>(0x1B2E1E4);
+
 const game::dvar_t** version =
     reinterpret_cast<const game::dvar_t**>(0x145D690);
 } // namespace dvars
