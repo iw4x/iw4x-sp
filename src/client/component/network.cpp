@@ -26,6 +26,16 @@ private:
     utils::hook::set<std::uint8_t>(0x44E824, 0xEB);
     utils::hook::set<std::uint8_t>(0x44E808, 0xEB);
 
+    // Disable MP packet handler
+    utils::hook::set<std::uint8_t>(0x65E717, 0xEB);
+
+    // Disable LSP paclet handler
+    utils::hook::set<std::uint8_t>(0x65E3A4, 0xEB);
+
+    // Avoid spam
+    utils::hook(0x65E786, game::Com_DPrintf, HOOK_CALL).install()->quick();
+    utils::hook(0x65D659, game::Com_DPrintf, HOOK_CALL).install()->quick();
+
     utils::hook::set<const char*>(0x475417, "connect_coop");
 
     // Force Win socket initialization

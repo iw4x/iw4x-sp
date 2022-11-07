@@ -5,7 +5,7 @@
 namespace game {
 // Com
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_Printf{0x41BD20};
-WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintWarning{0x4E0200};
+WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintWarning{0x406320};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintError{0x4C6980};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_DPrintf{0x42B1F0};
 WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
@@ -56,6 +56,7 @@ WEAK symbol<void(const char* dvarName, double value)> Dvar_SetFloatByName{
     0x497250};
 WEAK symbol<void(const char* dvarName, const char* value)> Dvar_SetStringByName{
     0x440C60};
+WEAK symbol<void(const dvar_t* dvar, int value)> Dvar_SetInt{0x4FA540};
 WEAK symbol<void(const dvar_t* dvar, const char* value)> Dvar_SetString{
     0x480E70};
 WEAK symbol<const char*(const char* dvarName)> Dvar_GetString{0x411F50};
@@ -96,6 +97,10 @@ WEAK symbol<char*(netadr_t a)> NET_AdrToString{0x4BF490};
 
 // Memory
 WEAK symbol<void*(int size)> Hunk_AllocateTempMemory{0x492DF0};
+
+// Zone
+WEAK symbol<void*(int size)> Z_VirtualAllocInternal{0x4D9CF0};
+WEAK symbol<void(void* ptr)> Z_VirtualFreeInternal{0x4FE260};
 
 // DB
 WEAK symbol<XAssetHeader(XAssetType type, const char* name)>

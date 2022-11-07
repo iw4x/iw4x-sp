@@ -2,7 +2,6 @@
 #include "loader/component_loader.hpp"
 #include "loader/loader.hpp"
 
-#include <utils/string.hpp>
 #include <utils/nt.hpp>
 #include <utils/io.hpp>
 
@@ -68,33 +67,35 @@ int main() {
   FARPROC entry_point;
   enable_dpi_awareness();
 
-  std::srand(uint32_t(time(nullptr)));
+  std::srand(std::uint32_t(time(nullptr)));
 
-  auto premature_shutdown = true;
-  const auto _ = gsl::finally([&premature_shutdown] {
-    if (premature_shutdown) {
-      component_loader::pre_destroy();
+  {
+    auto premature_shutdown = true;
+    const auto _0 = gsl::finally([&premature_shutdown] {
+      if (premature_shutdown) {
+        component_loader::pre_destroy();
+      }
+    });
+
+    try {
+      apply_environment();
+
+      if (!component_loader::post_start())
+        return 0;
+
+      entry_point = load_binary();
+      if (!entry_point) {
+        throw std::runtime_error("Unable to load binary into memory");
+      }
+
+      if (!component_loader::post_load())
+        return 0;
+
+      premature_shutdown = false;
+    } catch (const std::exception& ex) {
+      MessageBoxA(nullptr, ex.what(), "ERROR", MB_ICONERROR);
+      return 1;
     }
-  });
-
-  try {
-    apply_environment();
-
-    if (!component_loader::post_start())
-      return 0;
-
-    entry_point = load_binary();
-    if (!entry_point) {
-      throw std::runtime_error("Unable to load binary into memory");
-    }
-
-    if (!component_loader::post_load())
-      return 0;
-
-    premature_shutdown = false;
-  } catch (const std::exception& ex) {
-    MessageBoxA(nullptr, ex.what(), "ERROR", MB_ICONERROR);
-    return 1;
   }
 
   return entry_point();
