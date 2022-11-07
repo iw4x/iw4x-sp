@@ -32,8 +32,8 @@ FARPROC load_binary() {
   std::string data;
   if (!utils::io::read_file("iw4sp.exe", &data)) {
     throw std::runtime_error(
-        utils::string::va("Failed to read game binary (iw4sp.exe)!\nPlease "
-                          "select the correct path in the launcher settings."));
+        "Failed to read game binary (iw4sp.exe)!\nPlease select the correct "
+        "path in the launcher settings.");
   }
 
   return loader.load(self, data);
@@ -60,9 +60,8 @@ void apply_environment() {
 
   const auto _ = gsl::finally([&] { std::free(buffer); });
 
-  const std::wstring dir{buffer, size};
-  SetCurrentDirectoryW(dir.data());
-  SetDllDirectoryW(dir.data());
+  SetCurrentDirectoryW(buffer);
+  SetDllDirectoryW(buffer);
 }
 
 int main() {
