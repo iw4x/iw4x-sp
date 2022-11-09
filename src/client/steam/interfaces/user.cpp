@@ -1,16 +1,25 @@
 #include <std_include.hpp>
 #include "steam/steam.hpp"
 
+#include "component/auth.hpp"
+
 namespace steam {
+namespace {
 std::string auth_ticket;
+
+steam_id generate_steam_id() {
+  steam_id id{};
+  id.bits = auth::get_guid();
+  return id;
+}
+} // namespace
 
 int user::GetHSteamUser() { return NULL; }
 
 bool user::LoggedOn() { return true; }
 
 steam_id user::GetSteamID() {
-  steam_id id;
-  id.bits = 0x110000100000000 | (0x1377 & ~0x80000000);
+  static auto id = generate_steam_id();
   return id;
 }
 
@@ -93,7 +102,6 @@ unsigned __int64 user::RequestEncryptedAppTicket(void* pUserData,
   const auto result = callbacks::register_call();
   auto retvals = static_cast<encrypted_app_ticket_response*>(
       calloc(1, sizeof(encrypted_app_ticket_response)));
-  //::Utils::Memory::AllocateArray<EncryptedAppTicketResponse>();
   retvals->m_e_result = 1;
 
   // Return the call response
@@ -108,7 +116,8 @@ bool user::GetEncryptedAppTicket(void* pTicket, int cbMaxTicket,
   if (cbMaxTicket < 0 || auth_ticket.empty())
     return false;
 
-  const auto size = std::min(size_t(cbMaxTicket), auth_ticket.size());
+  const auto size =
+      std::min(static_cast<std::size_t>(cbMaxTicket), auth_ticket.size());
   std::memcpy(pTicket, auth_ticket.data(), size);
   *pcbTicket = size;
 

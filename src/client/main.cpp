@@ -1,9 +1,9 @@
 #include "std_include.hpp"
-#include "loader/component_loader.hpp"
-#include "loader/loader.hpp"
-
 #include <utils/nt.hpp>
 #include <utils/io.hpp>
+
+#include "loader/component_loader.hpp"
+#include "loader/loader.hpp"
 
 #include <gsl/gsl>
 

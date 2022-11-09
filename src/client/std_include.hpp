@@ -11,6 +11,15 @@
 
 #include <WinSock2.h>
 #include <Windows.h>
+#include <wincrypt.h>
+
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
 
 #include <algorithm>
 #include <cassert>
@@ -22,6 +31,7 @@
 #include <format>
 
 #pragma comment(lib, "ntdll.lib")
+#pragma comment(lib, "Crypt32.lib")
 
 #pragma warning(disable : 4100)
 #pragma warning(disable : 4244)

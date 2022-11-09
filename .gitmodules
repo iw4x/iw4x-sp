@@ -16,3 +16,9 @@
 [submodule "deps/discord-rpc"]
 	path = deps/discord-rpc
 	url = https://github.com/discord/discord-rpc.git
+[submodule "deps/libtommath"]
+	path = deps/libtommath
+	url = https://github.com/libtom/libtommath.git
+[submodule "deps/libtomcrypt"]
+	path = deps/libtomcrypt
+	url = https://github.com/libtom/libtomcrypt.git

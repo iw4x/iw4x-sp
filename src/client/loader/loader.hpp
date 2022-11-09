@@ -1,5 +1,4 @@
 #pragma once
-#include <utils/nt.hpp>
 
 class loader final {
 public:
