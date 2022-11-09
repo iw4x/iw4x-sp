@@ -67,7 +67,8 @@ int main() {
   FARPROC entry_point;
   enable_dpi_awareness();
 
-  std::srand(std::uint32_t(time(nullptr)));
+  std::srand(std::uint32_t(time(nullptr)) ^
+             ~(GetTickCount() * GetCurrentProcessId()));
 
   {
     auto premature_shutdown = true;
