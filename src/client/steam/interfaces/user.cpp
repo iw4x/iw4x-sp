@@ -1,17 +1,11 @@
 #include <std_include.hpp>
 #include "steam/steam.hpp"
 
-#include "component/auth.hpp"
+#include <utils/cryptography.hpp>
 
 namespace steam {
 namespace {
 std::string auth_ticket;
-
-steam_id generate_steam_id() {
-  steam_id id{};
-  id.bits = auth::get_guid();
-  return id;
-}
 } // namespace
 
 int user::GetHSteamUser() { return NULL; }
@@ -19,7 +13,13 @@ int user::GetHSteamUser() { return NULL; }
 bool user::LoggedOn() { return true; }
 
 steam_id user::GetSteamID() {
-  static auto id = generate_steam_id();
+  static std::uint32_t seed = 0;
+  if (!seed) {
+    seed = ::utils::cryptography::random::get_integer();
+  }
+
+  steam_id id;
+  id.bits = 0x110000100000000 | (seed & ~0x80000000);
   return id;
 }
 

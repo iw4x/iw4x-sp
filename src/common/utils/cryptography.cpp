@@ -539,14 +539,14 @@ unsigned int jenkins_one_at_a_time::compute(const char* key,
 
 std::uint32_t random::get_integer() {
   std::uint32_t result;
-  random::get_data(&result, sizeof(result));
+  get_data(&result, sizeof(result));
   return result;
 }
 
 std::string random::get_challenge() {
   std::string result;
   result.resize(sizeof(std::uint32_t));
-  random::get_data(result.data(), result.size());
+  get_data(result.data(), result.size());
   return string::dump_hex(result, "");
 }
 
