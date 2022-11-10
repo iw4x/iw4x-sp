@@ -29,12 +29,20 @@ private:
     // Disable MP packet handler
     utils::hook::set<std::uint8_t>(0x65E717, 0xEB);
 
-    // Disable LSP paclet handler
+    // Disable LSP packet handler
     utils::hook::set<std::uint8_t>(0x65E3A4, 0xEB);
 
     // Avoid spam
     utils::hook(0x65E786, game::Com_DPrintf, HOOK_CALL).install()->quick();
     utils::hook(0x65D659, game::Com_DPrintf, HOOK_CALL).install()->quick();
+
+    // Disable BigShort in NET_StringToAdr
+    utils::hook(0x40A657, game::ShortNoSwap, HOOK_CALL).install()->quick();
+    utils::hook(0x40A676, game::ShortNoSwap, HOOK_CALL).install()->quick();
+
+    // Disable BigShort in NET_AdrToString
+    utils::hook(0x4BF4D1, game::ShortNoSwap, HOOK_CALL).install()->quick();
+    utils::hook(0x4BF50C, game::ShortNoSwap, HOOK_CALL).install()->quick();
 
     utils::hook::set<const char*>(0x475417, "connect_coop");
 

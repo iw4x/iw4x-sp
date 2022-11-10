@@ -17,6 +17,9 @@ WEAK symbol<void(CriticalSection critSect)> Sys_EnterCriticalSection{0x4A4CD0};
 WEAK symbol<void(CriticalSection critSect)> Sys_LeaveCriticalSection{0x4F78E0};
 WEAK symbol<int()> Sys_Milliseconds{0x44E130};
 
+WEAK symbol<short(short l)> BigShort{0x40E7E0};
+WEAK symbol<short(short l)> ShortNoSwap{0x4261A0};
+
 // CL
 WEAK symbol<int(int localClientNum)> CL_IsCgameInitialized{0x4EEA50};
 WEAK symbol<void()> CL_CoOpConnect{0x57D240};
