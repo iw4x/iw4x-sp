@@ -5,18 +5,25 @@
 namespace game {
 // Com
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_Printf{0x41BD20};
-WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintWarning{0x4E0200};
+WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintWarning{0x406320};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_PrintError{0x4C6980};
 WEAK symbol<void(int channel, const char* fmt, ...)> Com_DPrintf{0x42B1F0};
 WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
 WEAK symbol<void()> Com_OpenLogFile{0x603030};
+WEAK symbol<int(char* data_p)> Com_Compress{0x4316A0};
 
 // Sys
 WEAK symbol<void(const char* exeName)> Sys_QuitAndStartProcess{0x4D69A0};
 WEAK symbol<void(CriticalSection critSect)> Sys_EnterCriticalSection{0x4A4CD0};
 WEAK symbol<void(CriticalSection critSect)> Sys_LeaveCriticalSection{0x4F78E0};
+WEAK symbol<int()> Sys_Milliseconds{0x44E130};
 
+WEAK symbol<short(short l)> BigShort{0x40E7E0};
+WEAK symbol<short(short l)> ShortNoSwap{0x4261A0};
+
+// CL
 WEAK symbol<int(int localClientNum)> CL_IsCgameInitialized{0x4EEA50};
+WEAK symbol<void()> CL_CoOpConnect{0x57D240};
 
 WEAK symbol<WeaponCompleteDef*(const char* name, const char* folder)>
     BG_LoadWeaponVariantDefInternal{0x4F5AF0};
@@ -54,9 +61,11 @@ WEAK symbol<void(const char* dvarName, double value)> Dvar_SetFloatByName{
     0x497250};
 WEAK symbol<void(const char* dvarName, const char* value)> Dvar_SetStringByName{
     0x440C60};
+WEAK symbol<void(const dvar_t* dvar, int value)> Dvar_SetInt{0x4FA540};
 WEAK symbol<void(const dvar_t* dvar, const char* value)> Dvar_SetString{
     0x480E70};
 WEAK symbol<const char*(const char* dvarName)> Dvar_GetString{0x411F50};
+WEAK symbol<bool(const char* dvarName)> Dvar_GetBool{0x481010};
 
 // Script
 WEAK symbol<void(const char* error)> Scr_Error{0x4E9C50};
@@ -93,6 +102,11 @@ WEAK symbol<char*(netadr_t a)> NET_AdrToString{0x4BF490};
 
 // Memory
 WEAK symbol<void*(int size)> Hunk_AllocateTempMemory{0x492DF0};
+WEAK symbol<void*(int size, int alignment)> Hunk_AllocAlignInternal{0x486C40};
+
+// Zone
+WEAK symbol<void*(int size)> Z_VirtualAllocInternal{0x4D9CF0};
+WEAK symbol<void(void* ptr)> Z_VirtualFreeInternal{0x4FE260};
 
 // DB
 WEAK symbol<XAssetHeader(XAssetType type, const char* name)>
@@ -104,6 +118,8 @@ WEAK symbol<void(RawFile* rawfile, char* buffer, int size)> DB_GetRawBuffer{
 WEAK symbol<void(XZoneInfo* zoneInfo, unsigned int zoneCount,
                  unsigned int syncMode)>
     DB_LoadXAssets{0x4CFC90};
+WEAK symbol<char*(const char* filename, char* buf, int size)> DB_ReadRawFile{
+    0x46DA60};
 
 // FS
 WEAK symbol<int(const char* qpath, void** buffer)> _FS_ReadFile{0x4A5480};
@@ -134,6 +150,17 @@ WEAK symbol<void(const ScreenPlacement* scrPlace, const char* text,
                  int maxChars, Font_s* font, float x, float y, int horzAlign,
                  int vertAlign, float scale, const float* color, int style)>
     UI_DrawText{0x40FC70};
+
+// PC
+WEAK symbol<int(source_s* source)> PC_Directive_define{0x4F8CF0};
+WEAK symbol<void(define_s* define)> PC_FreeDefine{0x464F40};
+WEAK symbol<token_s*(token_s* token)> PC_CopyToken{0x4D3670};
+WEAK symbol<int(int handle, pc_token_s* pc_token)> PC_ReadTokenHandle{0x46C3B0};
+WEAK symbol<void(int handle, const char* format, ...)> PC_SourceError{0x43A6D0};
+
+WEAK symbol<void*(unsigned int size)> GetMemory{0x441880};
+WEAK symbol<void*(unsigned int size)> GetClearedMemory{0x41BCD0};
+WEAK symbol<void(void* ptr)> FreeMemory{0x4A7D20};
 
 // PM
 WEAK symbol<void(pmove_t* pm, trace_t* results, const float* start,
@@ -175,6 +202,9 @@ WEAK symbol<int> logfile{0x145EC6C};
 WEAK symbol<level_locals_t> level{0x10A7190};
 
 WEAK symbol<RTL_CRITICAL_SECTION> s_criticalSection{0x19FBA28};
+
+WEAK symbol<source_s*> sourceFiles{0x7440E8};
+WEAK symbol<int> numtokens{0x7441F0};
 
 WEAK symbol<void*> DB_GetXAssetSizeHandlers{0x733408};
 WEAK symbol<void*> DB_XAssetPool{0x7337F8};

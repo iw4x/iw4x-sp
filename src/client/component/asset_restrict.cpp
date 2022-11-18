@@ -1,5 +1,5 @@
 #include <std_include.hpp>
-#include "../loader/component_loader.hpp"
+#include "loader/component_loader.hpp"
 
 #include <utils/hook.hpp>
 #include <utils/memory.hpp>
@@ -8,8 +8,9 @@
 
 namespace asset_restrict {
 namespace {
-// IW4x does this
 game::XAssetEntry entry_pool[789312];
+
+std::string map_entities;
 
 game::XAssetHeader reallocate_asset_pool(game::XAssetType type,
                                          const int size) {
@@ -24,12 +25,10 @@ game::XAssetHeader reallocate_asset_pool(game::XAssetType type,
 }
 
 void load_map_entities(game::MapEnts* entry) {
-  char filename[MAX_PATH]{};
+  const auto file_name = std::format("{0}.ents", entry->name);
+  const filesystem::file ent_file(file_name, game::FS_THREAD_DATABASE);
 
-  _snprintf_s(filename, _TRUNCATE, "%s.ents", entry->name);
-
-  static std::string map_entities;
-  filesystem::file ent_file(filename, game::FS_THREAD_DATABASE);
+  // Load ent file from raw if it exists
   if (ent_file.exists()) {
     map_entities = ent_file.get_buffer();
     entry->entityString = map_entities.data();

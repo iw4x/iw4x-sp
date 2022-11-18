@@ -1,5 +1,5 @@
 #include <std_include.hpp>
-#include "../loader/component_loader.hpp"
+#include "loader/component_loader.hpp"
 #include "game/dvars.hpp"
 #include "game/engine/scoped_critical_section.hpp"
 
@@ -10,7 +10,7 @@
 
 namespace debug {
 namespace {
-void com_assert_f() { assert(("a", false)); }
+void com_assert_f() { assert("a" && false); }
 
 void com_bug_f(const command::params& params) {
   char new_file_name[0x105]{};
@@ -53,6 +53,31 @@ void com_bug_f(const command::params& params) {
                          GetLastError(), "console.log", new_file_name);
   }
 }
+
+void g_print_fast_file_errors(const char* fastfile) {
+  assert(fastfile);
+
+  const auto rawfile_buf_large = std::make_unique<char[]>(0x18000);
+
+  auto* text = game::DB_ReadRawFile(fastfile, rawfile_buf_large.get(), 0x18000);
+
+  assert(text);
+
+  if (*text) {
+    game::Com_PrintError(game::CON_CHANNEL_ERROR,
+                         "There were errors when building fast file '%s'\n",
+                         fastfile);
+    game::Com_PrintError(game::CON_CHANNEL_ERROR, "%s", text);
+  }
+}
+
+void g_init_game_stub() {
+  utils::hook::invoke<void>(0x4D6410);
+
+  g_print_fast_file_errors("code_post_gfx");
+  g_print_fast_file_errors("common");
+  g_print_fast_file_errors((*dvars::sv_mapname)->current.string);
+}
 } // namespace
 
 class component final : public component_interface {
@@ -71,6 +96,12 @@ public:
         scheduler::pipeline::main);
 
     command::add("bug", com_bug_f);
+
+#ifdef _DEBUG
+    utils::hook(0x4C79DF, g_init_game_stub, HOOK_CALL)
+        .install()
+        ->quick(); // Scr_FreeEntityList
+#endif
   }
 };
 } // namespace debug

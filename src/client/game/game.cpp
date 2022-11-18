@@ -1,27 +1,10 @@
 #include <std_include.hpp>
 
 namespace game {
-namespace environment {
-launcher::mode mode = launcher::mode::none;
-
-bool is_sp() { return get_mode() == launcher::mode::singleplayer; }
-
-launcher::mode get_mode() {
-  if (mode == launcher::mode::none) {
-    throw std::runtime_error(
-        "Launcher mode not valid. Something must be wrong.");
-  }
-
-  return mode;
-}
-
-void set_mode(const launcher::mode _mode) { mode = _mode; }
-} // namespace environment
-
 int FS_FOpenFileReadForThread(const char* filename, int* file,
                               FsThread thread) {
   const static DWORD func = 0x630380;
-  int answer{};
+  int result{};
 
   __asm {
     pushad;
@@ -31,12 +14,12 @@ int FS_FOpenFileReadForThread(const char* filename, int* file,
     push filename;
     call func;
     add esp, 0x8;
-    mov answer, eax;
+    mov result, eax;
 
     popad;
   }
 
-  return answer;
+  return result;
 }
 
 void IN_KeyDown(kbutton_t* b) {
@@ -74,9 +57,45 @@ ScreenPlacement* ScrPlace_GetUnsafeFullPlacement() {
 }
 
 bool Sys_TryEnterCriticalSection(CriticalSection critSect) {
-  assert(static_cast<unsigned>(critSect) <
-         static_cast<unsigned>(CRITSECT_COUNT));
+  assert(static_cast<std::uint32_t>(critSect) <
+         static_cast<std::uint32_t>(CRITSECT_COUNT));
 
   return TryEnterCriticalSection(&s_criticalSection[critSect]) != FALSE;
+}
+
+int PC_Int_Parse(int handle, int* i) {
+  const static DWORD func = 0x62DF10;
+  int result{};
+
+  __asm {
+     pushad;
+
+     mov eax, handle;
+     mov esi, i;
+     call func;
+     mov result, eax;
+
+     popad;
+  }
+
+  return result;
+}
+
+int PC_Float_Parse(int handle, float* f) {
+  const static DWORD func = 0x62DE40;
+  int result{};
+
+  __asm {
+    pushad;
+
+    mov eax, handle;
+    mov esi, f;
+    call func;
+    mov result, eax;
+
+    popad;
+  }
+
+  return result;
 }
 } // namespace game

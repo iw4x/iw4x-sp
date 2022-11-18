@@ -1,5 +1,5 @@
 #include <std_include.hpp>
-#include "../loader/component_loader.hpp"
+#include "loader/component_loader.hpp"
 
 #include <utils/hook.hpp>
 
@@ -22,7 +22,7 @@ char* db_read_raw_file_stub(const char* filename, char* buf, int size) {
     game::FS_FCloseFile(file_handle);
     game::Com_PrintError(
         game::CON_CHANNEL_ERROR,
-        "Ignoring raw file '%s' as it exceeds buffer size {} > %i\n", filename,
+        "Ignoring raw file '%s' as it exceeds buffer size %i > %i\n", filename,
         file_size, size);
   }
 

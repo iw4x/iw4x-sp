@@ -1,5 +1,5 @@
 #include <std_include.hpp>
-#include "../../loader/component_loader.hpp"
+#include "loader/component_loader.hpp"
 
 #include <utils/hook.hpp>
 #include <utils/string.hpp>
@@ -24,10 +24,10 @@ std::unordered_map<std::string, script_method_def> custom_scr_meths;
 game::BuiltinFunction built_in_get_function_stub(const char** p_name,
                                                  int* type) {
   if (p_name) {
-    const auto got = custom_scr_funcs.find(utils::string::to_lower(*p_name));
-    if (got != custom_scr_funcs.end()) {
-      *type = got->second.type;
-      return got->second.actionFunc;
+    const auto itr = custom_scr_funcs.find(utils::string::to_lower(*p_name));
+    if (itr != custom_scr_funcs.end()) {
+      *type = itr->second.type;
+      return itr->second.actionFunc;
     }
   } else {
     for (const auto& [name, func] : custom_scr_funcs) {
@@ -42,10 +42,10 @@ game::BuiltinFunction built_in_get_function_stub(const char** p_name,
 
 game::BuiltinMethod built_in_get_method_stub(const char** p_name, int* type) {
   if (p_name) {
-    const auto got = custom_scr_meths.find(utils::string::to_lower(*p_name));
-    if (got != custom_scr_meths.end()) {
-      *type = got->second.type;
-      return got->second.actionFunc;
+    const auto itr = custom_scr_meths.find(utils::string::to_lower(*p_name));
+    if (itr != custom_scr_meths.end()) {
+      *type = itr->second.type;
+      return itr->second.actionFunc;
     }
   } else {
     for (const auto& [name, meth] : custom_scr_meths) {
@@ -115,7 +115,7 @@ public:
         game::Scr_AddFloat(static_cast<float>(game::Scr_GetInt(0)));
         break;
       default:
-        game::Scr_ParamError(0, utils::string::va("cannot cast %s to float",
+        game::Scr_ParamError(0, utils::string::va("cannot cast {} to float",
                                                   game::Scr_GetTypeName(0)));
         break;
       }

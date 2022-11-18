@@ -17,3 +17,11 @@ __declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = 1;
 extern "C" {
 char* get_payload_data() { return payload_data; }
 }
+
+extern "C" {
+int s_read_arc4random(void*, std::size_t) { return -1; }
+
+int s_read_getrandom(void*, std::size_t) { return -1; }
+
+int s_read_urandom(void*, std::size_t) { return -1; }
+}

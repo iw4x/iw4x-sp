@@ -1,5 +1,5 @@
 #include <std_include.hpp>
-#include "../loader/component_loader.hpp"
+#include "loader/component_loader.hpp"
 
 #include <utils/hook.hpp>
 
@@ -20,11 +20,14 @@ const game::dvar_t* dvar_register_name(const char* dvar_name, const char* value,
 class component final : public component_interface {
 public:
   void post_start() override {
-    dvar::override::dvar_register_bool("intro", true, game::DVAR_NONE);
-    dvar::override::dvar_register_float("cg_fov", 65.0f, 65.0f, 160.0f,
-                                        game::DVAR_ARCHIVE);
-    dvar::override::dvar_register_string("fs_basegame", BASEGAME,
-                                         game::DVAR_INIT);
+    dvar::override::register_bool("intro", true, game::DVAR_NONE);
+    dvar::override::register_float("cg_fov", 65.0f, 65.0f, 160.0f,
+                                   game::DVAR_ARCHIVE);
+    dvar::override::register_string("fs_basegame", BASEGAME, game::DVAR_INIT);
+
+#ifdef _DEBUG
+    dvar::override::register_bool("sv_cheats", true, game::DVAR_NONE);
+#endif
   }
 
   void post_load() override {
@@ -38,6 +41,11 @@ private:
     utils::hook::set<std::uint8_t>(0x635913, 0xEB); // Cheat protected
     utils::hook::set<std::uint8_t>(0x6358A5, 0xEB); // Write protected
     utils::hook::set<std::uint8_t>(0x635974, 0xEB); // Latched
+
+#ifdef _DEBUG
+    // Nop Dvar_RegisterVariant for sv_cheats in Dvar_Init
+    utils::hook::nop(0x471522, 5);
+#endif
 
     // Skip dvar output
     utils::hook::set<std::uint8_t>(0x4CD2B7, 0xEB);

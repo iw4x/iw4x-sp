@@ -131,6 +131,91 @@ enum fsMode_t {
   FS_APPEND_SYNC = 0x3,
 };
 
+struct token_s {
+  char string[1024];
+  int type;
+  int subtype;
+  unsigned int intvalue;
+  long double floatvalue;
+  char* whitespace_p;
+  char* endwhitespace_p;
+  int line;
+  int linescrossed;
+  token_s* next;
+};
+
+static_assert(sizeof(token_s) == 0x430);
+
+struct define_s {
+  char* name;
+  int flags;
+  int builtin;
+  int numparms;
+  token_s* parms;
+  token_s* tokens;
+  define_s* next;
+  define_s* hashnext;
+};
+
+struct punctuation_s {
+  const char* p;
+  int n;
+  punctuation_s* next;
+};
+
+struct script_s {
+  char filename[64];
+  char* buffer;
+  char* script_p;
+  char* end_p;
+  char* lastscript_p;
+  char* whitespace_p;
+  char* endwhitespace_p;
+  int length;
+  int line;
+  int lastline;
+  int tokenavailable;
+  int flags;
+  punctuation_s* punctuations;
+  punctuation_s** punctuationtable;
+  token_s token;
+  script_s* next;
+};
+
+enum parseSkip_t {
+  SKIP_NO = 0x0,
+  SKIP_YES = 0x1,
+  SKIP_ALL_ELIFS = 0x2,
+};
+
+struct indent_s {
+  int type;
+  parseSkip_t skip;
+  script_s* script;
+  indent_s* next;
+};
+
+struct source_s {
+  char filename[64];
+  char includepath[64];
+  punctuation_s* punctuations;
+  script_s* scriptstack;
+  token_s* tokens;
+  define_s* defines;
+  define_s** definehash;
+  indent_s* indentstack;
+  int skip;
+  token_s token;
+};
+
+struct pc_token_s {
+  int type;
+  int subtype;
+  int intvalue;
+  float floatvalue;
+  char string[1024];
+};
+
 struct cmd_function_s {
   cmd_function_s* next;
   const char* name;
@@ -308,11 +393,64 @@ struct RawFile {
   const char* buffer;
 };
 
+struct G_GlassPiece {
+  unsigned __int16 damageTaken;
+  unsigned __int16 collapseTime;
+  int lastStateChangeTime;
+  char impactDir;
+  char impactPos[2];
+};
+
+static_assert(sizeof(G_GlassPiece) == 0xC);
+
+struct G_GlassName {
+  char* nameStr;
+  unsigned __int16 name;
+  unsigned __int16 pieceCount;
+  unsigned __int16* pieceIndices;
+};
+
+static_assert(sizeof(G_GlassName) == 0xC);
+
+struct G_GlassData {
+  G_GlassPiece* glassPieces;
+  unsigned int pieceCount;
+  unsigned __int16 damageToWeaken;
+  unsigned __int16 damageToDestroy;
+  unsigned int glassNameCount;
+  G_GlassName* glassNames;
+  unsigned __int8 pad[108];
+};
+
+static_assert(sizeof(G_GlassData) == 0x80);
+
+struct GameWorldMp {
+  const char* name;
+  G_GlassData* g_glassData;
+};
+
+struct GameWorldSp {
+  const char* name;
+  unsigned char __pad0[0x30];
+  G_GlassData* g_glassData;
+};
+
+static_assert(sizeof(GameWorldSp) == 0x38);
+
+struct MenuList {
+  const char* name;
+  int menuCount;
+  void** menus;
+};
+
 union XAssetHeader {
   void* data;
+  GameWorldSp* gameWorldSp;
+  GameWorldMp* gameWorldMp;
   Font_s* font;
   WeaponCompleteDef* weapon;
   RawFile* rawfile;
+  MenuList* menuList;
 };
 
 struct XAsset {
@@ -398,50 +536,6 @@ struct level_locals_t {
 };
 
 static_assert(sizeof(level_locals_t) == 0x4780);
-
-struct G_GlassPiece {
-  unsigned __int16 damageTaken;
-  unsigned __int16 collapseTime;
-  int lastStateChangeTime;
-  char impactDir;
-  char impactPos[2];
-};
-
-static_assert(sizeof(G_GlassPiece) == 0xC);
-
-struct G_GlassName {
-  char* nameStr;
-  unsigned __int16 name;
-  unsigned __int16 pieceCount;
-  unsigned __int16* pieceIndices;
-};
-
-static_assert(sizeof(G_GlassName) == 0xC);
-
-struct G_GlassData {
-  G_GlassPiece* glassPieces;
-  unsigned int pieceCount;
-  unsigned __int16 damageToWeaken;
-  unsigned __int16 damageToDestroy;
-  unsigned int glassNameCount;
-  G_GlassName* glassNames;
-  unsigned __int8 pad[108];
-};
-
-static_assert(sizeof(G_GlassData) == 0x80);
-
-struct GameWorldMp {
-  const char* name;
-  G_GlassData* g_glassData;
-};
-
-struct GameWorldSp {
-  const char* name;
-  unsigned char __pad0[0x30];
-  G_GlassData* g_glassData;
-};
-
-static_assert(sizeof(GameWorldSp) == 0x38);
 
 struct field_t {
   int cursor;

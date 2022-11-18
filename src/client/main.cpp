@@ -1,13 +1,9 @@
 #include "std_include.hpp"
-#include "loader/component_loader.hpp"
-#include "loader/loader.hpp"
-
-#include "launcher/launcher.hpp"
-
-#include <utils/string.hpp>
-#include <utils/flags.hpp>
 #include <utils/nt.hpp>
 #include <utils/io.hpp>
+
+#include "loader/component_loader.hpp"
+#include "loader/loader.hpp"
 
 #include <gsl/gsl>
 
@@ -16,15 +12,7 @@ DECLSPEC_NORETURN void WINAPI exit_hook(const int code) {
   std::exit(code);
 }
 
-launcher::mode detect_mode_from_arguments() {
-  if (utils::flags::has_flag("singleplayer")) {
-    return launcher::mode::singleplayer;
-  }
-
-  return launcher::mode::none;
-}
-
-FARPROC load_binary(const launcher::mode mode) {
+FARPROC load_binary() {
   loader loader;
   utils::nt::library self;
 
@@ -40,21 +28,11 @@ FARPROC load_binary(const launcher::mode mode) {
         return component_loader::load_import(library, function);
       });
 
-  std::string binary;
-  switch (mode) {
-  case launcher::mode::singleplayer:
-    binary = "iw4sp.exe";
-    break;
-  case launcher::mode::none:
-    throw std::runtime_error("Invalid game mode!");
-  }
-
   std::string data;
-  if (!utils::io::read_file(binary, &data)) {
+  if (!utils::io::read_file("iw4sp.exe", &data)) {
     throw std::runtime_error(
-        utils::string::va("Failed to read game binary (%s)!\nPlease select the "
-                          "correct path in the launcher settings.",
-                          binary.data()));
+        "Failed to read game binary (iw4sp.exe)!\nPlease select the correct "
+        "path in the launcher settings.");
   }
 
   return loader.load(self, data);
@@ -81,43 +59,32 @@ void apply_environment() {
 
   const auto _ = gsl::finally([&] { std::free(buffer); });
 
-  const std::wstring dir{buffer, size};
-  SetCurrentDirectoryW(dir.data());
-  SetDllDirectoryW(dir.data());
+  SetCurrentDirectoryW(buffer);
+  SetDllDirectoryW(buffer);
 }
 
 int main() {
   FARPROC entry_point;
   enable_dpi_awareness();
 
-  std::srand(uint32_t(time(nullptr)));
+  std::srand(std::uint32_t(time(nullptr)) ^
+             ~(GetTickCount() * GetCurrentProcessId()));
 
   {
     auto premature_shutdown = true;
-    const auto _ = gsl::finally([&premature_shutdown] {
+    const auto _0 = gsl::finally([&premature_shutdown] {
       if (premature_shutdown) {
         component_loader::pre_destroy();
       }
     });
 
     try {
-#ifdef CI
       apply_environment();
-#endif
 
       if (!component_loader::post_start())
         return 0;
 
-      auto mode = detect_mode_from_arguments();
-      if (mode == launcher::mode::none) {
-        const launcher launcher;
-        mode = launcher.run();
-        if (mode == launcher::mode::none)
-          return 0;
-      }
-
-      game::environment::set_mode(mode);
-      entry_point = load_binary(mode);
+      entry_point = load_binary();
       if (!entry_point) {
         throw std::runtime_error("Unable to load binary into memory");
       }

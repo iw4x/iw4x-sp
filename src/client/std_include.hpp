@@ -11,20 +11,15 @@
 
 #include <WinSock2.h>
 #include <Windows.h>
-#include <MsHTML.h>
-#include <MsHtmHst.h>
-#include <ExDisp.h>
-#include <WS2tcpip.h>
-#include <corecrt_io.h>
-#include <fcntl.h>
-#include <shellapi.h>
-#include <ShlObj.h>
-#include <winternl.h>
-#include <VersionHelpers.h>
-#include <Psapi.h>
-#include <urlmon.h>
-#include <atlbase.h>
-#include <iphlpapi.h>
+#include <wincrypt.h>
+
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
 
 #include <algorithm>
 #include <cassert>
@@ -33,8 +28,11 @@
 #include <mutex>
 #include <string>
 #include <map>
+#include <format>
 
 #pragma comment(lib, "ntdll.lib")
+#pragma comment(lib, "Crypt32.lib")
+#pragma comment(lib, "Ws2_32.lib")
 
 #pragma warning(disable : 4100)
 #pragma warning(disable : 4244)

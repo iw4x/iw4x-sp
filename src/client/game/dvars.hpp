@@ -21,5 +21,7 @@ extern const game::dvar_t* g_log;
 // Game dvars
 extern const game::dvar_t** g_specialops;
 
+extern const game::dvar_t** sv_mapname;
+
 extern const game::dvar_t** version;
 } // namespace dvars

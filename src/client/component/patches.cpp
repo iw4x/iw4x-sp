@@ -1,5 +1,5 @@
 #include <std_include.hpp>
-#include "../loader/component_loader.hpp"
+#include "loader/component_loader.hpp"
 
 #include <utils/hook.hpp>
 #include <utils/nt.hpp>
@@ -25,12 +25,20 @@ void cl_start_multiplayer_f() {
   utils::nt::launch_process("iw4x.exe", "-multiplayer");
   command::execute("quit", false);
 }
+
+const char* live_get_local_client_name_stub() {
+  return game::Dvar_FindVar("name")->current.string;
+}
 } // namespace
 
 class component final : public component_interface {
 public:
   void post_load() override {
     utils::hook(0x6042A2, sys_init_stub, HOOK_CALL).install()->quick();
+
+    utils::hook(0x492EF0, live_get_local_client_name_stub, HOOK_JUMP)
+        .install()
+        ->quick();
 
     patch_sp();
   }

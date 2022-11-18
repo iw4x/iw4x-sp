@@ -1,5 +1,5 @@
 #include <std_include.hpp>
-#include "../loader/component_loader.hpp"
+#include "loader/component_loader.hpp"
 
 #include <utils/hook.hpp>
 #include <utils/string.hpp>
@@ -44,7 +44,7 @@ std::string get_binary_directory() {
 file::file(std::string name, game::FsThread thread) : name_(std::move(name)) {
   assert(!this->name_.empty());
 
-  int handle{};
+  auto handle = 0;
   const auto len =
       game::FS_FOpenFileReadForThread(name_.data(), &handle, thread);
 
