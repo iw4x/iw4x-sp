@@ -31,6 +31,12 @@ struct BuiltinFunctionDef {
 };
 
 enum {
+  VAR_STRING = 0x2,
+  VAR_FLOAT = 0x5,
+  VAR_INTEGER = 0x6,
+};
+
+enum {
   CON_CHANNEL_DONT_FILTER = 0x0,
   CON_CHANNEL_ERROR = 0x1,
   CON_CHANNEL_GAMENOTIFY = 0x2,

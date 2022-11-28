@@ -7,6 +7,8 @@
 #include "extension.hpp"
 
 namespace gsc {
+#define GSC_DEBUG_FUNCTIONS
+
 namespace {
 struct script_function_def {
   game::BuiltinFunction actionFunc;
@@ -88,7 +90,7 @@ public:
         ->quick(); // Scr_GetMethod
 
     add_functions();
-#ifdef _DEBUG
+#ifdef GSC_DEBUG_FUNCTIONS
     add_debug_functions();
 #endif
   }
@@ -104,14 +106,14 @@ public:
 
     add_function("Float", [] {
       switch (game::Scr_GetType(0)) {
-      case 2:
+      case game::VAR_STRING:
         game::Scr_AddFloat(
             static_cast<float>(std::atof(game::Scr_GetString(0))));
         break;
-      case 5:
+      case game::VAR_FLOAT:
         game::Scr_AddFloat(game::Scr_GetFloat(0));
         break;
-      case 6:
+      case game::VAR_INTEGER:
         game::Scr_AddFloat(static_cast<float>(game::Scr_GetInt(0)));
         break;
       default:
