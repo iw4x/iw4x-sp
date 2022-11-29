@@ -62,7 +62,7 @@ void com_bug_name_inc_f() {
     return;
   }
 
-  if (strncmp(dvars::bug_name->current.string, "bug", 3) != 0) {
+  if (std::strncmp(dvars::bug_name->current.string, "bug", 3) != 0) {
     game::Dvar_SetString(dvars::bug_name, "bug0");
     return;
   }
