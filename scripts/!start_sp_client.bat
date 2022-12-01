@@ -8,7 +8,6 @@ set XLABS_MW2_INSTALL=%~dp0
 start /W xlabs.exe -update
 
 :: You're done!! WARNING!!! Don't mess with anything below this line
-
 set GAME_EXE=%localappdata%\xlabs\data\iw4x\iw4x-sp.exe
 
 start %GAME_EXE%
