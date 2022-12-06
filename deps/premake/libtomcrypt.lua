@@ -34,6 +34,7 @@ function libtomcrypt.project()
 		}
 
 		removefiles {
+			path.join(libtomcrypt.source, "src/**/*_test.c"),
 			path.join(libtomcrypt.source, "src/**/*tab.c"),
 			path.join(libtomcrypt.source, "src/encauth/ocb3/**.c"),
 		}
