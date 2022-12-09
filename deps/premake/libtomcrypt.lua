@@ -19,6 +19,8 @@ function libtomcrypt.includes()
 		"LTC_NO_FAST",
 		"LTC_NO_PROTOTYPES",
 		"LTC_NO_RSA_BLINDING",
+		"LTC_NO_FILE",
+		"ARGTYPE=4",
 	}
 end
 
