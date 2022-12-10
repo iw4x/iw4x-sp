@@ -32,7 +32,7 @@ public:
       entry->double_size();
     }
 
-    std::memcpy(entry->buffer, str.data(), str.size());
+    std::memcpy(entry->buffer, str.data(), str.size() + 1);
 
     return entry->buffer;
   }
@@ -81,7 +81,7 @@ static void sanitize_format_args(Arg& arg) {
   if constexpr (std::is_same_v<Arg, char*> ||
                 std::is_same_v<Arg, const char*>) {
     if (arg == nullptr) {
-      arg = const_cast<char*>("null");
+      arg = const_cast<char*>("nullptr");
     }
   }
 }

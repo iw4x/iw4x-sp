@@ -1,7 +1,14 @@
 #include <std_include.hpp>
 #include "loader/component_loader.hpp"
 
+#include "raw_file.hpp"
+
 #include <utils/hook.hpp>
+#include <utils/io.hpp>
+#include <utils/string.hpp>
+#include <utils/flags.hpp>
+
+#include <zlib.h>
 
 namespace assets {
 namespace {
@@ -10,7 +17,7 @@ utils::hook::detour com_load_info_string_hook;
 
 char* db_read_raw_file_stub(const char* filename, char* buf, int size) {
   auto file_handle = 0;
-  auto file_size = game::FS_FOpenFileRead(filename, &file_handle);
+  const auto file_size = game::FS_FOpenFileRead(filename, &file_handle);
 
   if (file_handle != 0) {
     if ((file_size + 1) <= size) {
@@ -123,7 +130,37 @@ const char* com_load_info_string_stub(const char* file_name,
 
   return buffer;
 }
+
+bool is_enabled() { IS_FLAG_ENABLED(dump_raw_file); }
 } // namespace
+
+void process_raw_file(game::XAssetHeader header) {
+  if (!is_enabled()) {
+    return;
+  }
+
+  const auto* raw_file = header.rawfile;
+  const auto filename = utils::string::va("raw/{0}", raw_file->name);
+
+  if (raw_file->compressedLen > 0) {
+    std::vector<std::uint8_t> uncompressed;
+    uncompressed.resize(raw_file->len);
+
+    if (uncompress(uncompressed.data(), (uLongf*)&raw_file->len,
+                   (const Bytef*)raw_file->buffer,
+                   raw_file->compressedLen) == Z_OK) {
+      std::string data;
+      data.assign(uncompressed.begin(), uncompressed.end());
+
+      utils::io::write_file(filename, data);
+    }
+
+    return;
+  }
+
+  // If uncompressed just dump it
+  utils::io::write_file(filename, raw_file->buffer);
+}
 
 class raw_file final : public component_interface {
 public:

@@ -28,7 +28,6 @@
 #include <mutex>
 #include <string>
 #include <map>
-#include <format>
 
 #pragma comment(lib, "ntdll.lib")
 #pragma comment(lib, "Crypt32.lib")

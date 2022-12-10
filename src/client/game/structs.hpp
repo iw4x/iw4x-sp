@@ -373,11 +373,54 @@ struct netadr_t {
 
 static_assert(sizeof(netadr_t) == 0x14);
 
+struct Bounds {
+  float midPoint[3];
+  float halfSize[3];
+};
+
+struct TriggerModel {
+  int contents;
+  unsigned __int16 hullCount;
+  unsigned __int16 firstHull;
+};
+
+struct TriggerHull {
+  Bounds bounds;
+  int contents;
+  unsigned __int16 slabCount;
+  unsigned __int16 firstSlab;
+};
+
+struct TriggerSlab {
+  float dir[3];
+  float midPoint;
+  float halfSize;
+};
+
+struct MapTriggers {
+  unsigned int count;
+  TriggerModel* models;
+  unsigned int hullCount;
+  TriggerHull* hulls;
+  unsigned int slabCount;
+  TriggerSlab* slabs;
+};
+
+struct Stage {
+  const char* name;
+  float origin[3];
+  unsigned __int16 triggerIndex;
+  char sunPrimaryLightIndex;
+};
+
 struct MapEnts {
   const char* name;
   char* entityString;
   int numEntityChars;
-}; // Incomplete
+  MapTriggers trigger;
+  Stage* stages;
+  char stageCount;
+};
 
 struct WeaponCompleteDef {
   const char* szInternalName;
@@ -449,14 +492,21 @@ struct MenuList {
   void** menus;
 };
 
+struct LocalizeEntry {
+  const char* value;
+  const char* name;
+};
+
 union XAssetHeader {
-  void* data;
   GameWorldSp* gameWorldSp;
   GameWorldMp* gameWorldMp;
+  MapEnts* mapEnts;
   Font_s* font;
+  MenuList* menuList;
+  LocalizeEntry* localize;
   WeaponCompleteDef* weapon;
   RawFile* rawfile;
-  MenuList* menuList;
+  void* data;
 };
 
 struct XAsset {
@@ -713,11 +763,6 @@ struct lockonFireParms {
   gentity_s* target;
   float targetPosOrOffset[3];
   bool topFire;
-};
-
-struct Bounds {
-  float midPoint[3];
-  float halfSize[3];
 };
 
 enum TraceHitType {
