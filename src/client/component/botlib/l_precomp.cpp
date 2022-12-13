@@ -160,7 +160,7 @@ game::source_s* load_source_file(const char* filename) {
       static_cast<game::source_s*>(game::GetMemory(sizeof(game::source_s)));
   std::memset(source, 0, sizeof(game::source_s));
 
-  strncpy_s(source->filename, filename, game::MAX_QPATH);
+  strncpy_s(source->filename, filename, _TRUNCATE);
   source->scriptstack = script;
   source->tokens = nullptr;
   source->defines = nullptr;
