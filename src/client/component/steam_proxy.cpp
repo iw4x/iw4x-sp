@@ -71,7 +71,7 @@ private:
 
     for (auto i = 1; i < 1000; ++i) {
       const auto* name =
-          utils::string::va("CLIENTENGINE_INTERFACE_VERSION{:03}", i);
+          utils::string::va("CLIENTENGINE_INTERFACE_VERSION{0:03}", i);
 
       auto* const client_engine = this->steam_client_module_.invoke<void*>(
           "CreateInterface", name, nullptr);
@@ -131,7 +131,7 @@ private:
 
     const auto path = runner_file.get_extracted_file();
     const auto* cmdline =
-        utils::string::va("\"{}\" -proc {}", path, GetCurrentProcessId());
+        utils::string::va("\"{0}\" -proc {1}", path, GetCurrentProcessId());
 
     game_id game_id;
     game_id.raw.type = 1; // k_EGameIDTypeGameMod

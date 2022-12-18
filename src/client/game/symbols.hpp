@@ -12,6 +12,8 @@ WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
 WEAK symbol<void()> Com_OpenLogFile{0x603030};
 WEAK symbol<int(char* data_p)> Com_Compress{0x4316A0};
 
+WEAK symbol<const char*(const char* fmt, ...)> va{0x4869F0};
+
 // Sys
 WEAK symbol<void(const char* exeName)> Sys_QuitAndStartProcess{0x4D69A0};
 WEAK symbol<void(CriticalSection critSect)> Sys_EnterCriticalSection{0x4A4CD0};
@@ -20,6 +22,7 @@ WEAK symbol<int()> Sys_Milliseconds{0x44E130};
 WEAK symbol<bool()> Sys_IsMainThread{0x42FA00};
 WEAK symbol<bool()> Sys_IsServerThread{0x4590E0};
 WEAK symbol<bool()> Sys_IsDatabaseThread{0x4C9380};
+WEAK symbol<void(int valueIndex, void* data)> Sys_SetValue{0x483310};
 
 WEAK symbol<short(short l)> BigShort{0x40E7E0};
 WEAK symbol<short(short l)> ShortNoSwap{0x4261A0};
@@ -228,4 +231,6 @@ WEAK symbol<int> g_maxLargeLocalPos{0x195AAFC};
 
 WEAK symbol<int> g_largeLocalRightPos{0x195AAE8};
 WEAK symbol<int> g_minLargeLocalRightPos{0x195AB00};
+
+WEAK symbol<unsigned long> g_dwTlsIndex{0x1BFC750};
 } // namespace game

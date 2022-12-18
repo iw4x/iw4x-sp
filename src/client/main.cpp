@@ -1,11 +1,59 @@
 #include "std_include.hpp"
 #include <utils/nt.hpp>
 #include <utils/io.hpp>
+#include <utils/string.hpp>
 
 #include "loader/component_loader.hpp"
 #include "loader/loader.hpp"
 
 #include <gsl/gsl>
+
+#include <version.hpp>
+#include <DbgHelp.h>
+
+LONG WINAPI exception_handler(PEXCEPTION_POINTERS exception_info) {
+  if (exception_info->ExceptionRecord->ExceptionCode == 0x406D1388) {
+    return EXCEPTION_CONTINUE_EXECUTION;
+  }
+
+  if (exception_info->ExceptionRecord->ExceptionCode < 0x80000000 ||
+      exception_info->ExceptionRecord->ExceptionCode == 0xE06D7363) {
+    return EXCEPTION_CONTINUE_SEARCH;
+  }
+
+  MINIDUMP_EXCEPTION_INFORMATION exception_information = {
+      GetCurrentThreadId(), exception_info, FALSE};
+  const auto type = MiniDumpIgnoreInaccessibleMemory //
+                    | MiniDumpWithHandleData         //
+                    | MiniDumpScanMemory             //
+                    | MiniDumpWithProcessThreadData  //
+                    | MiniDumpWithFullMemoryInfo     //
+                    | MiniDumpWithThreadInfo;
+
+  CreateDirectoryA("minidumps", nullptr);
+  const auto file_name =
+      utils::string::va("minidumps\\iw4x-sp_{0}.dmp", SHORTVERSION);
+  constexpr auto file_share = FILE_SHARE_READ | FILE_SHARE_WRITE;
+  const auto file_handle =
+      CreateFileA(file_name, GENERIC_WRITE | GENERIC_READ, file_share, nullptr,
+                  CREATE_ALWAYS, NULL, nullptr);
+
+  if (!MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(),
+                         file_handle, static_cast<MINIDUMP_TYPE>(type),
+                         &exception_information, nullptr, nullptr)) {
+    char buf[4096]{};
+    sprintf_s(buf, "An exception 0x%08X occurred at location 0x%p\n",
+              exception_info->ExceptionRecord->ExceptionCode,
+              exception_info->ExceptionRecord->ExceptionAddress);
+    MessageBoxA(nullptr, buf, "Fatal Error", MB_ICONERROR);
+  }
+
+  CloseHandle(file_handle);
+  TerminateProcess(GetCurrentProcess(),
+                   exception_info->ExceptionRecord->ExceptionCode);
+
+  return EXCEPTION_CONTINUE_SEARCH;
+}
 
 DECLSPEC_NORETURN void WINAPI exit_hook(const int code) {
   component_loader::pre_destroy();
@@ -64,6 +112,8 @@ void apply_environment() {
 }
 
 int main() {
+  AddVectoredExceptionHandler(0, exception_handler);
+
   FARPROC entry_point;
   enable_dpi_awareness();
 

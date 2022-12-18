@@ -43,7 +43,7 @@ FARPROC loader::load_library(const std::string& filename) const {
   const auto base = size_t(target.get_ptr());
   if (base != 0x400000) {
     throw std::runtime_error{
-        utils::string::va("Binary was mapped at {:#x} (instead of {:#x}). "
+        utils::string::va("Binary was mapped at {0:#x} (instead of {1:#x}). "
                           "Something is severely broken :(",
                           base, 0x400000)};
   }
@@ -136,7 +136,7 @@ void loader::load_imports(const utils::nt::library& target,
 
       if (!function) {
         throw std::runtime_error(
-            utils::string::va("Unable to load import '{}' from library {}'",
+            utils::string::va("Unable to load import '{0}' from library {1}'",
                               function_name, name));
       }
 

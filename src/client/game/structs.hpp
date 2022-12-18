@@ -841,6 +841,14 @@ enum CriticalSection {
   CRITSECT_COUNT = 0x28,
 };
 
+enum {
+  THREAD_VALUE_PROF_STACK = 0x0,
+  THREAD_VALUE_VA = 0x1,
+  THREAD_VALUE_COM_ERROR = 0x2,
+  THREAD_VALUE_TRACE = 0x3,
+  THREAD_VALUE_COUNT = 0x4,
+};
+
 struct TempPriority {
   void* threadHandle;
   int oldPriority;
@@ -851,6 +859,64 @@ struct FastCriticalSection {
   volatile long writeCount;
   TempPriority tempPriority;
 };
+
+struct ProfileAtom {
+  unsigned int value[1];
+};
+
+volatile struct ProfileReadable {
+  unsigned int hits;
+  ProfileAtom total;
+  ProfileAtom self;
+};
+
+struct ProfileWritable {
+  int nesting;
+  unsigned int hits;
+  ProfileAtom start[3];
+  ProfileAtom total;
+  ProfileAtom child;
+};
+
+struct profile_t {
+  ProfileWritable write;
+  ProfileReadable read;
+};
+
+struct profile_guard_t {
+  int id;
+  profile_t** ppStack;
+};
+
+struct ProfileStack {
+  profile_t prof_root;
+  profile_t* prof_pStack[16384];
+  profile_t** prof_ppStack;
+  profile_t prof_array[443];
+  ProfileAtom prof_overhead_internal;
+  ProfileAtom prof_overhead_external;
+  profile_guard_t prof_guardstack[32];
+  int prof_guardpos;
+  float prof_timescale;
+};
+
+struct va_info_t {
+  char va_string[2][1024];
+  int index;
+};
+
+static_assert(sizeof(va_info_t) == 0x804);
+
+struct TraceCheckCount {
+  int global;
+  int* partitions;
+};
+
+struct TraceThreadInfo {
+  TraceCheckCount checkcount;
+};
+
+static_assert(sizeof(TraceThreadInfo) == 0x8);
 } // namespace game
 
 #pragma warning(pop)

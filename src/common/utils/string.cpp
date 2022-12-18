@@ -5,12 +5,6 @@
 #include "nt.hpp"
 
 namespace utils::string {
-const char* va_format(std::string_view fmt, std::format_args&& args) {
-  static thread_local va_provider<8, 256> provider;
-  const auto str = std::vformat(fmt, args);
-  return provider.copy(str);
-}
-
 std::vector<std::string> split(const std::string& s, const char delim) {
   std::stringstream ss(s);
   std::string item;
