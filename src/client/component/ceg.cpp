@@ -26,6 +26,11 @@ public:
     utils::hook::set<std::uint8_t>(0x47A140, 0xC3);
 
     utils::hook::nop(0x411166, 9);
+
+    // Remove 'Steam Start' check
+    utils::hook::nop(0x43FAD5, 12);
+    // Shutdown
+    utils::hook::set<std::uint8_t>(0x4619B0, 0xC3);
   }
 };
 } // namespace ceg
