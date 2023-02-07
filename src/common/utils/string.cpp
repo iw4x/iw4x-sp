@@ -56,6 +56,7 @@ bool compare(const std::string& lhs, const std::string& rhs) {
 }
 
 std::string dump_hex(const std::string& data, const std::string& separator) {
+  char buf[64]{};
   std::string result;
 
   for (unsigned int i = 0; i < data.size(); ++i) {
@@ -63,7 +64,8 @@ std::string dump_hex(const std::string& data, const std::string& separator) {
       result.append(separator);
     }
 
-    result.append(va("%02X", data[i] & 0xFF));
+    sprintf_s(buf, "%02X", data[i] & 0xFF);
+    result.append(buf);
   }
 
   return result;

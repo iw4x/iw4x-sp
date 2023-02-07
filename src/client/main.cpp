@@ -3,6 +3,7 @@
 #include <utils/io.hpp>
 #include <utils/string.hpp>
 
+#include "loader/binary_loader.hpp"
 #include "loader/component_loader.hpp"
 #include "loader/loader.hpp"
 
@@ -76,14 +77,8 @@ FARPROC load_binary() {
         return component_loader::load_import(library, function);
       });
 
-  std::string data;
-  if (!utils::io::read_file("iw4sp.exe", &data)) {
-    throw std::runtime_error(
-        "Failed to read game binary (iw4sp.exe)!\nPlease select the correct "
-        "path in the launcher settings.");
-  }
-
-  return loader.load(self, data);
+  const auto buffer = binary_loader::load();
+  return loader.load(self, buffer);
 }
 
 void enable_dpi_awareness() {

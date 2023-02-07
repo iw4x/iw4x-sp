@@ -41,8 +41,10 @@ std::string read_file(const std::string& file) {
 }
 
 bool read_file(const std::string& file, std::string* data) {
-  if (!data)
+  if (!data) {
     return false;
+  }
+
   data->clear();
 
   if (file_exists(file)) {
@@ -55,7 +57,7 @@ bool read_file(const std::string& file, std::string* data) {
     stream.seekg(0, std::ios::beg);
 
     if (size > -1) {
-      data->resize(static_cast<uint32_t>(size));
+      data->resize(static_cast<std::string::size_type>(size));
       stream.read(data->data(), size);
       stream.close();
       return true;
