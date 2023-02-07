@@ -5,12 +5,6 @@
 #include "nt.hpp"
 
 namespace utils::string {
-const char* va_format(std::string_view fmt, std::format_args&& args) {
-  static thread_local va_provider<8, 256> provider;
-  const auto str = std::vformat(fmt, args);
-  return provider.copy(str);
-}
-
 std::vector<std::string> split(const std::string& s, const char delim) {
   std::stringstream ss(s);
   std::string item;
@@ -24,22 +18,24 @@ std::vector<std::string> split(const std::string& s, const char delim) {
   return elems;
 }
 
-std::string to_lower(std::string text) {
-  std::transform(text.begin(), text.end(), text.begin(),
-                 [](const unsigned char input) {
-                   return static_cast<char>(std::tolower(input));
-                 });
+std::string to_lower(const std::string& text) {
+  std::string result;
+  std::ranges::transform(text, std::back_inserter(result),
+                         [](const unsigned char input) {
+                           return static_cast<char>(std::tolower(input));
+                         });
 
-  return text;
+  return result;
 }
 
-std::string to_upper(std::string text) {
-  std::transform(text.begin(), text.end(), text.begin(),
-                 [](const unsigned char input) {
-                   return static_cast<char>(std::toupper(input));
-                 });
+std::string to_upper(const std::string& text) {
+  std::string result;
+  std::ranges::transform(text, std::back_inserter(result),
+                         [](const unsigned char input) {
+                           return static_cast<char>(std::toupper(input));
+                         });
 
-  return text;
+  return result;
 }
 
 bool starts_with(const std::string& text, const std::string& substring) {
@@ -60,6 +56,7 @@ bool compare(const std::string& lhs, const std::string& rhs) {
 }
 
 std::string dump_hex(const std::string& data, const std::string& separator) {
+  char buf[64]{};
   std::string result;
 
   for (unsigned int i = 0; i < data.size(); ++i) {
@@ -67,7 +64,8 @@ std::string dump_hex(const std::string& data, const std::string& separator) {
       result.append(separator);
     }
 
-    result.append(va("%02X", data[i] & 0xFF));
+    sprintf_s(buf, "%02X", data[i] & 0xFF);
+    result.append(buf);
   }
 
   return result;

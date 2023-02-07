@@ -364,7 +364,7 @@ std::string tiger::compute(const std::string& data, const bool hex) {
   return compute(cs(data.data()), data.size(), hex);
 }
 
-std::string tiger::compute(const uint8_t* data, const size_t length,
+std::string tiger::compute(const std::uint8_t* data, const std::size_t length,
                            const bool hex) {
   std::uint8_t buffer[24]{};
 
@@ -377,7 +377,7 @@ std::string tiger::compute(const uint8_t* data, const size_t length,
   if (!hex)
     return hash;
 
-  return string::dump_hex(hash, "");
+  return string::dump_hex(hash, {});
 }
 
 std::string aes::encrypt(const std::string& data, const std::string& iv,
@@ -445,7 +445,7 @@ std::string sha1::compute(const std::uint8_t* data, const std::size_t length,
   if (!hex)
     return hash;
 
-  return string::dump_hex(hash, "");
+  return string::dump_hex(hash, {});
 }
 
 std::string sha256::compute(const std::string& data, const bool hex) {
@@ -465,7 +465,7 @@ std::string sha256::compute(const std::uint8_t* data, const std::size_t length,
   if (!hex)
     return hash;
 
-  return string::dump_hex(hash, "");
+  return string::dump_hex(hash, {});
 }
 
 std::string sha512::compute(const std::string& data, const bool hex) {
@@ -485,7 +485,7 @@ std::string sha512::compute(const std::uint8_t* data, const std::size_t length,
   if (!hex)
     return hash;
 
-  return string::dump_hex(hash, "");
+  return string::dump_hex(hash, {});
 }
 
 std::string base64::encode(const std::uint8_t* data, const std::size_t len) {
@@ -502,7 +502,7 @@ std::string base64::encode(const std::uint8_t* data, const std::size_t len) {
 }
 
 std::string base64::encode(const std::string& data) {
-  return base64::encode(cs(data.data()), data.size());
+  return encode(cs(data.data()), data.size());
 }
 
 std::string base64::decode(const std::string& data) {
@@ -525,7 +525,7 @@ unsigned int jenkins_one_at_a_time::compute(const std::string& data) {
 
 unsigned int jenkins_one_at_a_time::compute(const char* key,
                                             const std::size_t len) {
-  unsigned int hash, i;
+  std::uint32_t hash, i;
   for (hash = i = 0; i < len; ++i) {
     hash += key[i];
     hash += (hash << 10);
@@ -547,7 +547,7 @@ std::string random::get_challenge() {
   std::string result;
   result.resize(sizeof(std::uint32_t));
   get_data(result.data(), result.size());
-  return string::dump_hex(result, "");
+  return string::dump_hex(result, {});
 }
 
 void random::get_data(void* data, const std::size_t size) {

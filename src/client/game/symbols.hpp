@@ -12,14 +12,23 @@ WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
 WEAK symbol<void()> Com_OpenLogFile{0x603030};
 WEAK symbol<int(char* data_p)> Com_Compress{0x4316A0};
 
+WEAK symbol<const char*(const char* fmt, ...)> va{0x4869F0};
+
 // Sys
 WEAK symbol<void(const char* exeName)> Sys_QuitAndStartProcess{0x4D69A0};
 WEAK symbol<void(CriticalSection critSect)> Sys_EnterCriticalSection{0x4A4CD0};
 WEAK symbol<void(CriticalSection critSect)> Sys_LeaveCriticalSection{0x4F78E0};
 WEAK symbol<int()> Sys_Milliseconds{0x44E130};
+WEAK symbol<bool()> Sys_IsMainThread{0x42FA00};
+WEAK symbol<bool()> Sys_IsServerThread{0x4590E0};
+WEAK symbol<bool()> Sys_IsDatabaseThread{0x4C9380};
+WEAK symbol<void(int valueIndex, void* data)> Sys_SetValue{0x483310};
 
 WEAK symbol<short(short l)> BigShort{0x40E7E0};
 WEAK symbol<short(short l)> ShortNoSwap{0x4261A0};
+
+WEAK symbol<int(int size)> LargeLocalBegin{0x43fA50};
+WEAK symbol<int(int size)> LargeLocalBeginRight{0x6317D0};
 
 // CL
 WEAK symbol<int(int localClientNum)> CL_IsCgameInitialized{0x4EEA50};
@@ -106,6 +115,8 @@ WEAK symbol<void*(int size, int alignment)> Hunk_AllocAlignInternal{0x486C40};
 
 // Zone
 WEAK symbol<void*(int size)> Z_VirtualAllocInternal{0x4D9CF0};
+WEAK symbol<void*(int size, const char* name)> Z_TryVirtualAllocInternal{
+    0x4D9590};
 WEAK symbol<void(void* ptr)> Z_VirtualFreeInternal{0x4FE260};
 
 // DB
@@ -175,6 +186,9 @@ WEAK symbol<void(pmove_t* pm, trace_t* results, const float* start,
 // Live
 WEAK symbol<const char*(int controllerIndex)> Live_GetLocalClientName{0x492EF0};
 
+// Info
+WEAK symbol<int(const char* s)> Info_Validate{0x425530};
+
 // IW functions, could use Microsoft specific functions but who cares
 WEAK symbol<int(const char* s0, const char* s1)> I_stricmp{0x409B80};
 WEAK symbol<int(const char* s0, const char* s1, int n)> I_strnicmp{0x491E60};
@@ -209,4 +223,14 @@ WEAK symbol<int> numtokens{0x7441F0};
 WEAK symbol<void*> DB_GetXAssetSizeHandlers{0x733408};
 WEAK symbol<void*> DB_XAssetPool{0x7337F8};
 WEAK symbol<unsigned int> g_poolSize{0x733510};
+
+WEAK symbol<unsigned char*> g_largeLocalBuf{0x195AAF8};
+
+WEAK symbol<int> g_largeLocalPos{0x1963998};
+WEAK symbol<int> g_maxLargeLocalPos{0x195AAFC};
+
+WEAK symbol<int> g_largeLocalRightPos{0x195AAE8};
+WEAK symbol<int> g_minLargeLocalRightPos{0x195AB00};
+
+WEAK symbol<unsigned long> g_dwTlsIndex{0x1BFC750};
 } // namespace game

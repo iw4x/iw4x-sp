@@ -96,9 +96,9 @@ namespace zip {
 namespace {
 bool add_file(zipFile& zip_file, const std::string& filename,
               const std::string& data) {
-  if (ZIP_OK != zipOpenNewFileInZip(zip_file, filename.data(), nullptr, nullptr,
-                                    0, nullptr, 0, nullptr, Z_DEFLATED,
-                                    Z_BEST_COMPRESSION)) {
+  if (zipOpenNewFileInZip(zip_file, filename.data(), nullptr, nullptr, 0,
+                          nullptr, 0, nullptr, Z_DEFLATED,
+                          Z_BEST_COMPRESSION) != ZIP_OK) {
     return false;
   }
 

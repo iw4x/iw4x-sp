@@ -28,11 +28,11 @@
 #include <mutex>
 #include <string>
 #include <map>
-#include <format>
 
 #pragma comment(lib, "ntdll.lib")
 #pragma comment(lib, "Crypt32.lib")
 #pragma comment(lib, "Ws2_32.lib")
+#pragma comment(lib, "dbghelp.lib")
 
 #pragma warning(disable : 4100)
 #pragma warning(disable : 4244)

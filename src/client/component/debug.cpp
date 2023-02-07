@@ -2,6 +2,7 @@
 #include "loader/component_loader.hpp"
 #include "game/dvars.hpp"
 #include "game/engine/scoped_critical_section.hpp"
+#include "game/engine/large_local.hpp"
 
 #include <utils/hook.hpp>
 
@@ -30,8 +31,7 @@ void com_bug_f(const command::params& params) {
     bug = dvars::bug_name->current.string;
   }
 
-  _snprintf_s(new_file_name, _TRUNCATE, "%s_%s.log", bug,
-              game::Live_GetLocalClientName(0));
+  sprintf_s(new_file_name, "%s_%s.log", bug, game::Live_GetLocalClientName(0));
 
   game::engine::scoped_critical_section _(game::CRITSECT_CONSOLE,
                                           game::SCOPED_CRITSECT_NORMAL);
@@ -54,12 +54,31 @@ void com_bug_f(const command::params& params) {
   }
 }
 
+void com_bug_name_inc_f() {
+  char buf[260]{};
+
+  if (std::strlen(dvars::bug_name->current.string) < 4) {
+    game::Dvar_SetString(dvars::bug_name, "bug0");
+    return;
+  }
+
+  if (std::strncmp(dvars::bug_name->current.string, "bug", 3) != 0) {
+    game::Dvar_SetString(dvars::bug_name, "bug0");
+    return;
+  }
+
+  const auto n = std::strtol(dvars::bug_name->current.string + 3, nullptr, 10);
+  sprintf_s(buf, "bug%d", n + 1);
+  game::Dvar_SetString(dvars::bug_name, buf);
+}
+
 void g_print_fast_file_errors(const char* fastfile) {
   assert(fastfile);
 
-  const auto rawfile_buf_large = std::make_unique<char[]>(0x18000);
+  game::engine::large_local rawfile_buf_large_local(0x18000);
+  auto* rawfile_buf = static_cast<char*>(rawfile_buf_large_local.get_buf());
 
-  auto* text = game::DB_ReadRawFile(fastfile, rawfile_buf_large.get(), 0x18000);
+  auto* text = game::DB_ReadRawFile(fastfile, rawfile_buf, 0x18000);
 
   assert(text);
 
@@ -96,6 +115,7 @@ public:
         scheduler::pipeline::main);
 
     command::add("bug", com_bug_f);
+    command::add("bug_name_inc", com_bug_name_inc_f);
 
 #ifdef _DEBUG
     utils::hook(0x4C79DF, g_init_game_stub, HOOK_CALL)

@@ -31,6 +31,12 @@ struct BuiltinFunctionDef {
 };
 
 enum {
+  VAR_STRING = 0x2,
+  VAR_FLOAT = 0x5,
+  VAR_INTEGER = 0x6,
+};
+
+enum {
   CON_CHANNEL_DONT_FILTER = 0x0,
   CON_CHANNEL_ERROR = 0x1,
   CON_CHANNEL_GAMENOTIFY = 0x2,
@@ -367,11 +373,54 @@ struct netadr_t {
 
 static_assert(sizeof(netadr_t) == 0x14);
 
+struct Bounds {
+  float midPoint[3];
+  float halfSize[3];
+};
+
+struct TriggerModel {
+  int contents;
+  unsigned __int16 hullCount;
+  unsigned __int16 firstHull;
+};
+
+struct TriggerHull {
+  Bounds bounds;
+  int contents;
+  unsigned __int16 slabCount;
+  unsigned __int16 firstSlab;
+};
+
+struct TriggerSlab {
+  float dir[3];
+  float midPoint;
+  float halfSize;
+};
+
+struct MapTriggers {
+  unsigned int count;
+  TriggerModel* models;
+  unsigned int hullCount;
+  TriggerHull* hulls;
+  unsigned int slabCount;
+  TriggerSlab* slabs;
+};
+
+struct Stage {
+  const char* name;
+  float origin[3];
+  unsigned __int16 triggerIndex;
+  char sunPrimaryLightIndex;
+};
+
 struct MapEnts {
   const char* name;
   char* entityString;
   int numEntityChars;
-}; // Incomplete
+  MapTriggers trigger;
+  Stage* stages;
+  char stageCount;
+};
 
 struct WeaponCompleteDef {
   const char* szInternalName;
@@ -443,14 +492,21 @@ struct MenuList {
   void** menus;
 };
 
+struct LocalizeEntry {
+  const char* value;
+  const char* name;
+};
+
 union XAssetHeader {
-  void* data;
   GameWorldSp* gameWorldSp;
   GameWorldMp* gameWorldMp;
+  MapEnts* mapEnts;
   Font_s* font;
+  MenuList* menuList;
+  LocalizeEntry* localize;
   WeaponCompleteDef* weapon;
   RawFile* rawfile;
-  MenuList* menuList;
+  void* data;
 };
 
 struct XAsset {
@@ -709,11 +765,6 @@ struct lockonFireParms {
   bool topFire;
 };
 
-struct Bounds {
-  float midPoint[3];
-  float halfSize[3];
-};
-
 enum TraceHitType {
   TRACE_HITTYPE_NONE = 0x0,
   TRACE_HITTYPE_ENTITY = 0x1,
@@ -790,6 +841,14 @@ enum CriticalSection {
   CRITSECT_COUNT = 0x28,
 };
 
+enum {
+  THREAD_VALUE_PROF_STACK = 0x0,
+  THREAD_VALUE_VA = 0x1,
+  THREAD_VALUE_COM_ERROR = 0x2,
+  THREAD_VALUE_TRACE = 0x3,
+  THREAD_VALUE_COUNT = 0x4,
+};
+
 struct TempPriority {
   void* threadHandle;
   int oldPriority;
@@ -800,6 +859,64 @@ struct FastCriticalSection {
   volatile long writeCount;
   TempPriority tempPriority;
 };
+
+struct ProfileAtom {
+  unsigned int value[1];
+};
+
+volatile struct ProfileReadable {
+  unsigned int hits;
+  ProfileAtom total;
+  ProfileAtom self;
+};
+
+struct ProfileWritable {
+  int nesting;
+  unsigned int hits;
+  ProfileAtom start[3];
+  ProfileAtom total;
+  ProfileAtom child;
+};
+
+struct profile_t {
+  ProfileWritable write;
+  ProfileReadable read;
+};
+
+struct profile_guard_t {
+  int id;
+  profile_t** ppStack;
+};
+
+struct ProfileStack {
+  profile_t prof_root;
+  profile_t* prof_pStack[16384];
+  profile_t** prof_ppStack;
+  profile_t prof_array[443];
+  ProfileAtom prof_overhead_internal;
+  ProfileAtom prof_overhead_external;
+  profile_guard_t prof_guardstack[32];
+  int prof_guardpos;
+  float prof_timescale;
+};
+
+struct va_info_t {
+  char va_string[2][1024];
+  int index;
+};
+
+static_assert(sizeof(va_info_t) == 0x804);
+
+struct TraceCheckCount {
+  int global;
+  int* partitions;
+};
+
+struct TraceThreadInfo {
+  TraceCheckCount checkcount;
+};
+
+static_assert(sizeof(TraceThreadInfo) == 0x8);
 } // namespace game
 
 #pragma warning(pop)

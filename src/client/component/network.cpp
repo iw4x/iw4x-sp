@@ -19,7 +19,7 @@ void cl_co_op_connect(const command::params& params) {
   const auto port = htons(static_cast<std::uint16_t>(input));
 
   command::execute(
-      utils::string::va("connect_coop {} {}", params.get(1), port));
+      utils::string::va("connect_coop {0} {1}", params.get(1), port));
 }
 } // namespace
 
