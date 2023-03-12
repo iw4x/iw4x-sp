@@ -108,6 +108,7 @@ void apply_environment() {
 
 int main() {
   AddVectoredExceptionHandler(0, exception_handler);
+  SetProcessDEPPolicy(PROCESS_DEP_ENABLE);
 
   FARPROC entry_point;
   enable_dpi_awareness();

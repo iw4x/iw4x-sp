@@ -37,8 +37,12 @@ WEAK symbol<int(int size)> LargeLocalBeginRight{0x6317D0};
 WEAK symbol<int(int localClientNum)> CL_IsCgameInitialized{0x4EEA50};
 WEAK symbol<void()> CL_CoOpConnect{0x57D240};
 
+// BG
 WEAK symbol<WeaponCompleteDef*(const char* name, const char* folder)>
     BG_LoadWeaponVariantDefInternal{0x4F5AF0};
+
+// Game
+WEAK symbol<int()> G_GetTime{0x4E94E0};
 
 WEAK symbol<void(int, const char* text)> Cbuf_AddText{0x4A1090};
 WEAK symbol<void(int localClientNum, int controllerIndex, const char* text)>

@@ -23,6 +23,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cctype>
+#include <cstring>
 #include <functional>
 #include <iostream>
 #include <mutex>
