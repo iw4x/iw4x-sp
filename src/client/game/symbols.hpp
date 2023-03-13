@@ -93,7 +93,9 @@ WEAK symbol<unsigned int()> Scr_GetNumParam{0x4443F0};
 WEAK symbol<void()> Scr_ClearOutParams{0x4A3A00};
 WEAK symbol<const char*(unsigned int index)> Scr_GetTypeName{0x4CE240};
 WEAK symbol<const char*(unsigned int index)> Scr_GetString{0x4D39C0};
+WEAK symbol<void(const char* value)> Scr_AddString{0x4CD670};
 WEAK symbol<unsigned int(unsigned int index)> Scr_GetConstString{0x4AF1B0};
+WEAK symbol<void(unsigned int value)> Scr_AddConstString{0x404CF0};
 WEAK symbol<int(unsigned int index)> Scr_GetInt{0x454520};
 WEAK symbol<void(int value)> Scr_AddInt{0x4865B0};
 WEAK symbol<float(unsigned int index)> Scr_GetFloat{0x4AE590};
@@ -113,8 +115,10 @@ WEAK symbol<void(unsigned __int16 handle)> Scr_FreeThread{0x4C44A0};
 
 // SL
 WEAK symbol<const char*(unsigned int stringValue)> SL_ConvertToString{0x40E990};
+WEAK symbol<void(unsigned int stringValue)> SL_AddRefToString{0x4C4BD0};
+WEAK symbol<void(unsigned int stringValue)> SL_RemoveRefToString{0x4698E0};
 
-WEAK symbol<char*(netadr_t a)> NET_AdrToString{0x4BF490};
+WEAK symbol<const char*(netadr_t a)> NET_AdrToString{0x4BF490};
 WEAK symbol<const char*()> NET_ErrorString{0x430390};
 
 // Memory
