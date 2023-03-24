@@ -93,17 +93,17 @@ void enable_dpi_awareness() {
 }
 
 void apply_environment() {
-  wchar_t* buffer{};
+  char* buffer{};
   std::size_t size{};
-  if (_wdupenv_s(&buffer, &size, L"XLABS_MW2_INSTALL") != 0 ||
+  if (_dupenv_s(&buffer, &size, "XLABS_MW2_INSTALL") != 0 ||
       buffer == nullptr) {
-    throw std::runtime_error("Please use the X Labs launcher to run the game!");
+    return;
   }
 
   const auto _ = gsl::finally([&] { std::free(buffer); });
 
-  SetCurrentDirectoryW(buffer);
-  SetDllDirectoryW(buffer);
+  SetCurrentDirectoryA(buffer);
+  SetDllDirectoryA(buffer);
 }
 
 int main() {
