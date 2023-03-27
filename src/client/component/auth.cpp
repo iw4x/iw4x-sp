@@ -1,7 +1,9 @@
 #include <std_include.hpp>
+#include "loader/component_loader.hpp"
 
-#include <utils/smbios.hpp>
 #include <utils/cryptography.hpp>
+#include <utils/hook.hpp>
+#include <utils/smbios.hpp>
 #include <utils/string.hpp>
 
 #include "auth.hpp"
@@ -14,7 +16,7 @@ std::string get_hw_profile_guid() {
     return {};
   }
 
-  return {info.szHwProfileGuid, sizeof(info.szHwProfileGuid)};
+  return std::string{info.szHwProfileGuid, sizeof(info.szHwProfileGuid)};
 }
 
 std::string get_protected_data() {
@@ -69,4 +71,14 @@ utils::cryptography::ecc::key& get_key() {
 } // namespace
 
 std::uint64_t get_guid() { return get_key().get_hash(); }
+
+class component final : public component_interface {
+public:
+  void post_load() override {
+    // Patch Steam_GetClientIDAsXUID
+    utils::hook::set<std::uint32_t>(0x4911B0, 0xC301B0);
+  }
+};
 } // namespace auth
+
+REGISTER_COMPONENT(auth::component)

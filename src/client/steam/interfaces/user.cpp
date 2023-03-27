@@ -19,7 +19,7 @@ steam_id user::GetSteamID() {
   }
 
   steam_id id;
-  id.bits = 0x110000100000000 | (seed & ~0x80000000);
+  id.bits = seed;
   return id;
 }
 
@@ -95,7 +95,7 @@ unsigned __int64 user::RequestEncryptedAppTicket(void* pUserData,
 
   auth_ticket = "iw4x-sp";
   auth_ticket.resize(32);
-  auth_ticket.append(reinterpret_cast<char*>(pUserData), cbUserData);
+  auth_ticket.append(static_cast<char*>(pUserData), cbUserData);
   auth_ticket.append(reinterpret_cast<const char*>(&id.bits), sizeof(id.bits));
 
   // Create the call response
