@@ -96,14 +96,6 @@ public:
   }
 
   static void add_functions() {
-    add_function("StrICmp", [] {
-      const auto result = game::I_stricmp(
-          game::SL_ConvertToString(game::Scr_GetConstString(0)),
-          game::SL_ConvertToString(game::Scr_GetConstString(1)));
-
-      game::Scr_AddInt(result);
-    });
-
     add_function("Float", [] {
       switch (game::Scr_GetType(0)) {
       case game::VAR_STRING:

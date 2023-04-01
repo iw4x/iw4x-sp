@@ -11,6 +11,8 @@ WEAK symbol<void(int channel, const char* fmt, ...)> Com_DPrintf{0x42B1F0};
 WEAK symbol<void(errorParm_t code, const char* fmt, ...)> Com_Error{0x43DD90};
 WEAK symbol<void()> Com_OpenLogFile{0x603030};
 WEAK symbol<int(char* data_p)> Com_Compress{0x4316A0};
+WEAK symbol<void()> Com_EventLoop{0x4987C0};
+WEAK symbol<void()> Com_ServerPacketEvent{0x47FD30};
 
 WEAK symbol<const char*(const char* fmt, ...)> va{0x4869F0};
 
@@ -23,6 +25,7 @@ WEAK symbol<bool()> Sys_IsMainThread{0x42FA00};
 WEAK symbol<bool()> Sys_IsServerThread{0x4590E0};
 WEAK symbol<bool()> Sys_IsDatabaseThread{0x4C9380};
 WEAK symbol<void(int valueIndex, void* data)> Sys_SetValue{0x483310};
+WEAK symbol<void(int msec)> Sys_Sleep{0x4CFBE0};
 
 WEAK symbol<short(short l)> BigShort{0x40E7E0};
 WEAK symbol<short(short l)> ShortNoSwap{0x4261A0};
@@ -34,8 +37,12 @@ WEAK symbol<int(int size)> LargeLocalBeginRight{0x6317D0};
 WEAK symbol<int(int localClientNum)> CL_IsCgameInitialized{0x4EEA50};
 WEAK symbol<void()> CL_CoOpConnect{0x57D240};
 
+// BG
 WEAK symbol<WeaponCompleteDef*(const char* name, const char* folder)>
     BG_LoadWeaponVariantDefInternal{0x4F5AF0};
+
+// Game
+WEAK symbol<int()> G_GetTime{0x4E94E0};
 
 WEAK symbol<void(int, const char* text)> Cbuf_AddText{0x4A1090};
 WEAK symbol<void(int localClientNum, int controllerIndex, const char* text)>
@@ -86,7 +93,9 @@ WEAK symbol<unsigned int()> Scr_GetNumParam{0x4443F0};
 WEAK symbol<void()> Scr_ClearOutParams{0x4A3A00};
 WEAK symbol<const char*(unsigned int index)> Scr_GetTypeName{0x4CE240};
 WEAK symbol<const char*(unsigned int index)> Scr_GetString{0x4D39C0};
+WEAK symbol<void(const char* value)> Scr_AddString{0x4CD670};
 WEAK symbol<unsigned int(unsigned int index)> Scr_GetConstString{0x4AF1B0};
+WEAK symbol<void(unsigned int value)> Scr_AddConstString{0x404CF0};
 WEAK symbol<int(unsigned int index)> Scr_GetInt{0x454520};
 WEAK symbol<void(int value)> Scr_AddInt{0x4865B0};
 WEAK symbol<float(unsigned int index)> Scr_GetFloat{0x4AE590};
@@ -106,8 +115,11 @@ WEAK symbol<void(unsigned __int16 handle)> Scr_FreeThread{0x4C44A0};
 
 // SL
 WEAK symbol<const char*(unsigned int stringValue)> SL_ConvertToString{0x40E990};
+WEAK symbol<void(unsigned int stringValue)> SL_AddRefToString{0x4C4BD0};
+WEAK symbol<void(unsigned int stringValue)> SL_RemoveRefToString{0x4698E0};
 
-WEAK symbol<char*(netadr_t a)> NET_AdrToString{0x4BF490};
+WEAK symbol<const char*(netadr_t a)> NET_AdrToString{0x4BF490};
+WEAK symbol<const char*()> NET_ErrorString{0x430390};
 
 // Memory
 WEAK symbol<void*(int size)> Hunk_AllocateTempMemory{0x492DF0};
@@ -201,6 +213,8 @@ WEAK symbol<CmdArgs> sv_cmd_args{0x145ABA0};
 WEAK symbol<gentity_s> g_entities{0xEAAC38};
 WEAK symbol<gclient_s> g_clients{0x10911E8};
 
+WEAK symbol<int> com_frameTime{0x145EC7C};
+
 WEAK symbol<bool> cin_skippable{0x73264C};
 
 WEAK symbol<field_t> g_consoleField{0x88C700};
@@ -216,6 +230,7 @@ WEAK symbol<int> logfile{0x145EC6C};
 WEAK symbol<level_locals_t> level{0x10A7190};
 
 WEAK symbol<RTL_CRITICAL_SECTION> s_criticalSection{0x19FBA28};
+WEAK symbol<SOCKET> ip_socket{0x1A040C8};
 
 WEAK symbol<source_s*> sourceFiles{0x7440E8};
 WEAK symbol<int> numtokens{0x7441F0};

@@ -1,7 +1,10 @@
 #include <std_include.hpp>
 #include "interface.hpp"
+
 #include <utils/memory.hpp>
 #include <utils/nt.hpp>
+
+#include <udis86.h>
 
 namespace steam {
 interface::interface() : interface(nullptr) {}
@@ -99,7 +102,7 @@ bool interface::is_rdata(void* pointer) {
     name[size] = 0;
     std::memcpy(name, section->Name, size);
 
-    if (name == ".rdata"s) {
+    if (std::strcmp(name, ".rdata") == 0) {
       const auto target = reinterpret_cast<std::size_t>(pointer);
       const size_t source_start =
           size_t(pointer_lib.get_ptr()) + section->PointerToRawData;

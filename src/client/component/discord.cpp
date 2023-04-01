@@ -5,6 +5,8 @@
 
 #include "scheduler.hpp"
 
+using namespace std::literals;
+
 namespace discord {
 namespace {
 DiscordRichPresence discord_presence;

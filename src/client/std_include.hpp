@@ -23,6 +23,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cctype>
+#include <cstring>
 #include <functional>
 #include <iostream>
 #include <mutex>
@@ -36,10 +38,6 @@
 
 #pragma warning(disable : 4100)
 #pragma warning(disable : 4244)
-
-#include <udis86.h>
-
-using namespace std::literals;
 
 // I have witnessed clang re-ordering my included even when
 // it was set not to do it. :(

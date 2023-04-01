@@ -26,10 +26,13 @@ void g_scr_load_scripts_stub() {
     game::Com_Printf(game::CON_CHANNEL_SERVER, "Loading script %s...\n",
                      script_file);
 
-    sprintf_s(path, "%s/%s", "scripts", script_file);
+    const auto len = sprintf_s(path, "%s/%s", "scripts", script_file);
+    if (len == -1) {
+      continue;
+    }
 
     // Scr_LoadScriptInternal will add the '.gsc' suffix so we remove it
-    path[std::strlen(path) - 4] = '\0';
+    path[len - 4] = '\0';
 
     if (!game::Scr_LoadScript(path)) {
       game::Com_Printf(game::CON_CHANNEL_SERVER,

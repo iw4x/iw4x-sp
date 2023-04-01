@@ -1,5 +1,7 @@
 #pragma once
 
+using namespace std::literals;
+
 namespace scheduler {
 enum pipeline {
   // Asynchronuous pipeline, disconnected from the game

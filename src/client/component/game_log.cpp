@@ -37,7 +37,7 @@ void g_scr_log_print() {
 void g_init_game_stub() {
   game::Com_Printf(game::CON_CHANNEL_SERVER,
                    "------- Game Initialization -------\n");
-  game::Com_Printf(game::CON_CHANNEL_SERVER, "gamename: IW4x\n");
+  game::Com_Printf(game::CON_CHANNEL_SERVER, "gamename: IW4x-SP\n");
   game::Com_Printf(game::CON_CHANNEL_SERVER, "gamedate: %s\n", __DATE__);
 
   if (*dvars::g_log->current.string == '\0') {
