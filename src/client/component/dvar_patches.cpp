@@ -12,8 +12,7 @@ const game::dvar_t* dvar_register_name(const char* dvar_name, const char* value,
                                        unsigned __int16 flags,
                                        const char* description) {
   return game::Dvar_RegisterString(
-      dvar_name, value,
-      game::DVAR_ARCHIVE | game::DVAR_USERINFO | game::DVAR_UNK1, description);
+      dvar_name, value, game::DVAR_ARCHIVE | game::DVAR_USERINFO, description);
 }
 } // namespace
 

@@ -78,6 +78,7 @@ WEAK symbol<void(const char* dvarName, double value)> Dvar_SetFloatByName{
 WEAK symbol<void(const char* dvarName, const char* value)> Dvar_SetStringByName{
     0x440C60};
 WEAK symbol<void(const dvar_t* dvar, int value)> Dvar_SetInt{0x4FA540};
+WEAK symbol<void(const dvar_t* dvar, bool value)> Dvar_SetBool{0x4E57E0};
 WEAK symbol<void(const dvar_t* dvar, const char* value)> Dvar_SetString{
     0x480E70};
 WEAK symbol<const char*(const char* dvarName)> Dvar_GetString{0x411F50};
