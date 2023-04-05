@@ -35,7 +35,6 @@ __declspec(naked) void set_aspect_ratio_stub() {
         ja default_case;
         je custom_ratio;
 
-    // execute switch statement code
         push 0x50AE6C;
         ret;
 
@@ -44,13 +43,12 @@ __declspec(naked) void set_aspect_ratio_stub() {
         ret;
 
     custom_ratio:
-        // set custom resolution
         pushad;
         call set_aspect_ratio;
         popad;
 
-    // set widescreen to 1
-        mov eax, 1;
+
+        mov eax, 1; // set widescreen to 1
 
         push 0x50AF05;
         ret;
