@@ -47,7 +47,6 @@ __declspec(naked) void set_aspect_ratio_stub() {
         call set_aspect_ratio;
         popad;
 
-
         mov eax, 1; // set widescreen to 1
 
         push 0x50AF05;
