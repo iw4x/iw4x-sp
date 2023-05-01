@@ -2,7 +2,6 @@
 #include "loader/component_loader.hpp"
 
 #include "network.hpp"
-#include "command.hpp"
 
 #include <utils/hook.hpp>
 
