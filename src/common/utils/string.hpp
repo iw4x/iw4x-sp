@@ -20,11 +20,9 @@ static void sanitize_format_args(Arg& arg) {
 template <typename... Args>
 static const char* va(std::string_view fmt, Args&&... args) {
   static thread_local std::string va_buffer;
-  va_buffer.clear();
 
   (sanitize_format_args(args), ...);
-  std::vformat_to(std::back_inserter(va_buffer), fmt,
-                  std::make_format_args(args...));
+  std::vformat(fmt, std::make_format_args(args...)).swap(va_buffer);
   return va_buffer.data();
 }
 
