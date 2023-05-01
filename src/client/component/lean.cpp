@@ -65,6 +65,7 @@ public:
     command::add_raw("-leanright", in_lean_right_up, TRUE);
 
     utils::hook(0x57B2B0, cl_cmd_buttons_stub, HOOK_JUMP).install()->quick();
+    utils::hook::nop(0x57B2B0 + 5, 3);
   }
 };
 } // namespace lean
