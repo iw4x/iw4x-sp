@@ -16,6 +16,9 @@ WEAK symbol<void()> Com_ServerPacketEvent{0x47FD30};
 
 WEAK symbol<const char*(const char* fmt, ...)> va{0x4869F0};
 
+// Con
+WEAK symbol<bool(const char* cmd)> Con_IsDvarCommand{0x4B6610};
+
 // Sys
 WEAK symbol<void(const char* exeName)> Sys_QuitAndStartProcess{0x4D69A0};
 WEAK symbol<void(CriticalSection critSect)> Sys_EnterCriticalSection{0x4A4CD0};

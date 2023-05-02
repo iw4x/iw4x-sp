@@ -7,16 +7,7 @@
 
 namespace console {
 namespace {
-void hide_console() {
-  auto* const con_window = GetConsoleWindow();
-
-  DWORD process;
-  GetWindowThreadProcessId(con_window, &process);
-
-  if (process == GetCurrentProcessId() || IsDebuggerPresent()) {
-    ShowWindow(con_window, SW_HIDE);
-  }
-}
+bool is_command;
 
 void con_toggle_console() {
   game::Field_Clear(game::g_consoleField);
@@ -37,14 +28,23 @@ void con_toggle_console() {
                                   *reinterpret_cast<std::uint32_t*>(0x929140) ^
                                       game::KEYCATCH_CONSOLE);
 }
+
+bool con_is_dvar_command_stub(const char* cmd) {
+  is_command = game::Con_IsDvarCommand(cmd);
+  return is_command;
+}
+
+void cmd_for_each_stub(void (*callback)(const char* str)) {
+  if (!is_command) {
+    utils::hook::invoke<void>(0x4B7000, callback);
+  }
+}
 } // namespace
 
 class component final : public component_interface {
 public:
   static_assert(sizeof(game::field_t) == 0x118);
   static_assert(sizeof(game::ConDrawInputGlob) == 0x64);
-
-  component() { hide_console(); }
 
   void post_start() override {
     // Prevents console from opening
@@ -58,6 +58,12 @@ public:
     utils::hook(0x442E8E, con_toggle_console, HOOK_JUMP)
         .install()
         ->quick(); // CL_KeyEvent
+
+    // Con_DrawInput
+    utils::hook(0x57946D, con_is_dvar_command_stub, HOOK_CALL)
+        .install()
+        ->quick();
+    utils::hook(0x57951C, cmd_for_each_stub, HOOK_CALL).install()->quick();
   }
 };
 } // namespace console
