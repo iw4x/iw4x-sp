@@ -9,6 +9,9 @@
 
 namespace scheduler {
 namespace {
+constexpr auto cond_continue = false;
+constexpr auto cond_end = true;
+
 struct task {
   std::function<bool()> handler{};
   std::chrono::milliseconds interval{};

@@ -2,6 +2,8 @@
 #include "loader/component_loader.hpp"
 #include "game/dvars.hpp"
 
+#include "gsc/extension.hpp"
+
 #include <utils/hook.hpp>
 
 namespace player_movement {
@@ -62,7 +64,7 @@ game::gentity_s* weapon_rocket_launcher_fire_stub(
       0x443F20, ent, weapon_index, spread, wp, gun_vel, lock_parms,
       magic_bullet);
 
-  if (ent->client != nullptr && dvars::pm_rocketJump->current.enabled) {
+  if (ent->client && dvars::pm_rocketJump->current.enabled) {
     const auto scale = dvars::pm_rocketJumpScale->current.value;
     ent->client->ps.velocity[0] += (0.0f - wp->forward[0]) * scale;
     ent->client->ps.velocity[1] += (0.0f - wp->forward[1]) * scale;
@@ -107,6 +109,15 @@ void pm_player_trace_stub(game::pmove_t* pm, game::trace_t* results,
     results->startsolid = false;
   }
 }
+void g_scr_is_sprinting(const game::scr_entref_t entref) {
+  const auto* client = game::GetEntity(entref)->client;
+  if (!client) {
+    game::Scr_Error("IsSprinting can only be called on a player");
+    return;
+  }
+
+  game::Scr_AddInt(game::PM_IsSprinting(&client->ps));
+}
 } // namespace
 
 class component final : public component_interface {
@@ -143,6 +154,7 @@ public:
         .install()
         ->quick(); // PM_CorrectAllSolid
 
+    gsc::add_method("IsSprinting", g_scr_is_sprinting);
     register_dvars();
   }
 

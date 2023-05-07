@@ -92,6 +92,7 @@ WEAK symbol<void(const char* error)> Scr_Error{0x4E9C50};
 WEAK symbol<void(const char* error)> Scr_ObjectError{0x470600};
 WEAK symbol<void(unsigned int paramIndex, const char* error)> Scr_ParamError{
     0x42C880};
+WEAK symbol<gentity_s*(scr_entref_t entref)> GetEntity{0x4678C0};
 
 WEAK symbol<unsigned int()> Scr_GetNumParam{0x4443F0};
 WEAK symbol<void()> Scr_ClearOutParams{0x4A3A00};
@@ -198,6 +199,7 @@ WEAK symbol<void(pmove_t* pm, trace_t* results, const float* start,
                  const float* end, const Bounds* bounds, int passEntityNum,
                  int contentMask)>
     PM_playerTrace{0x447B90};
+WEAK symbol<bool(const playerState_s* ps)> PM_IsSprinting{0x47CF70};
 
 // Live
 WEAK symbol<const char*(int controllerIndex)> Live_GetLocalClientName{0x492EF0};
