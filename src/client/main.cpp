@@ -32,7 +32,7 @@ LONG WINAPI exception_handler(PEXCEPTION_POINTERS exception_info) {
                     | MiniDumpWithThreadInfo;
 
   CreateDirectoryA("minidumps", nullptr);
-  const auto file_name =
+  const auto* file_name =
       utils::string::va("minidumps\\iw4x-sp_{0}.dmp", SHORTVERSION);
   constexpr auto file_share = FILE_SHARE_READ | FILE_SHARE_WRITE;
   const auto file_handle =
