@@ -30,7 +30,10 @@ void info_string::parse(std::string buffer) {
        i += 2) {
     const auto& key = key_values[i];
     const auto& value = key_values[i + 1];
-    this->key_value_pairs_[key] = value;
+
+    if (!this->key_value_pairs_.contains(key)) {
+      this->key_value_pairs_[key] = value;
+    }
   }
 }
 
