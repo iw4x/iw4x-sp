@@ -19,6 +19,9 @@ enum pipeline {
   count,
 };
 
+static constexpr auto cond_continue = false;
+static constexpr auto cond_end = true;
+
 void clear_tasks(pipeline type);
 
 void schedule(const std::function<bool()>& callback, pipeline type,

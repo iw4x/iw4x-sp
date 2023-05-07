@@ -158,19 +158,21 @@ private:
   }
 
   void clean_up_on_error() {
-    scheduler::schedule([this] {
-      if (this->steam_client_module_ && this->steam_pipe_ &&
-          this->global_user_ &&
-          this->steam_client_module_.invoke<bool>(
-              "Steam_BConnected", this->global_user_, this->steam_pipe_) &&
-          this->steam_client_module_.invoke<bool>(
-              "Steam_BLoggedOn", this->global_user_, this->steam_pipe_)) {
-        return scheduler::cond_continue;
-      }
+    scheduler::schedule(
+        [this] {
+          if (this->steam_client_module_ && this->steam_pipe_ &&
+              this->global_user_ &&
+              this->steam_client_module_.invoke<bool>(
+                  "Steam_BConnected", this->global_user_, this->steam_pipe_) &&
+              this->steam_client_module_.invoke<bool>(
+                  "Steam_BLoggedOn", this->global_user_, this->steam_pipe_)) {
+            return scheduler::cond_continue;
+          }
 
-      this->do_cleanup();
-      return scheduler::cond_end;
-    });
+          this->do_cleanup();
+          return scheduler::cond_end;
+        },
+        scheduler::pipeline::async);
   }
 };
 
