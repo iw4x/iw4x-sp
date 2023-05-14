@@ -1,8 +1,7 @@
 #pragma once
 
 namespace game {
-template <typename T> class base_symbol {
-public:
+template <typename T> struct base_symbol {
   base_symbol(const std::size_t address) : address_(address) {}
 
   [[nodiscard]] T* get() const { return reinterpret_cast<T*>(this->address_); }
