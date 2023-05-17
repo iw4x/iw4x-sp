@@ -1,10 +1,10 @@
 #include <std_include.hpp>
 #include "loader/component_loader.hpp"
 
-#include <utils/nt.hpp>
-#include <utils/string.hpp>
 #include <utils/binary_resource.hpp>
 #include <utils/flags.hpp>
+#include <utils/nt.hpp>
+#include <utils/string.hpp>
 
 #include <resource.hpp>
 

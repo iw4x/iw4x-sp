@@ -153,36 +153,38 @@ void loader::load_imports(const utils::nt::library& target,
 
 void loader::load_tls(const utils::nt::library& target,
                       const utils::nt::library& source) const {
-  if (source.get_optional_header()
-          ->DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS]
-          .Size) {
-    auto* target_tls = tls::allocate_tls_index();
-
-    auto* const source_tls = reinterpret_cast<PIMAGE_TLS_DIRECTORY>(
-        target.get_ptr() + source.get_optional_header()
-                               ->DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS]
-                               .VirtualAddress);
-
-    const auto tls_size =
-        source_tls->EndAddressOfRawData - source_tls->StartAddressOfRawData;
-    const auto tls_index =
-        *reinterpret_cast<DWORD*>(target_tls->AddressOfIndex);
-    utils::hook::set<DWORD>(source_tls->AddressOfIndex, tls_index);
-
-    DWORD old_protect;
-    VirtualProtect(PVOID(target_tls->StartAddressOfRawData),
-                   source_tls->EndAddressOfRawData -
-                       source_tls->StartAddressOfRawData,
-                   PAGE_READWRITE, &old_protect);
-
-    auto* const tls_base =
-        *reinterpret_cast<LPVOID*>(__readfsdword(0x2C) + 4 * tls_index);
-    std::memmove(tls_base, PVOID(source_tls->StartAddressOfRawData), tls_size);
-    std::memmove(PVOID(target_tls->StartAddressOfRawData),
-                 PVOID(source_tls->StartAddressOfRawData), tls_size);
-
-    VirtualProtect(target_tls, sizeof(*target_tls), PAGE_READWRITE,
-                   &old_protect);
-    *target_tls = *source_tls;
+  if (!target.get_optional_header()
+           ->DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS]
+           .Size) {
+    return;
   }
+
+  auto* target_tls = tls::allocate_tls_index();
+  const auto* const source_tls = reinterpret_cast<PIMAGE_TLS_DIRECTORY>(
+      target.get_ptr() + target.get_optional_header()
+                             ->DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS]
+                             .VirtualAddress);
+
+  auto* target_tls_start = PVOID(target_tls->StartAddressOfRawData);
+  auto* tls_start = PVOID(source_tls->StartAddressOfRawData);
+  const auto tls_size =
+      source_tls->EndAddressOfRawData - source_tls->StartAddressOfRawData;
+  const auto tls_index = *reinterpret_cast<DWORD*>(target_tls->AddressOfIndex);
+
+  utils::hook::set<DWORD>(source_tls->AddressOfIndex, tls_index);
+
+  if (target_tls->AddressOfCallBacks) {
+    utils::hook::set<void*>(target_tls->AddressOfCallBacks, nullptr);
+  }
+
+  DWORD old_protect;
+  VirtualProtect(target_tls_start, tls_size, PAGE_READWRITE, &old_protect);
+
+  auto* const tls_base =
+      *reinterpret_cast<LPVOID*>(__readfsdword(0x2C) + 4 * tls_index);
+  std::memmove(tls_base, tls_start, tls_size);
+  std::memmove(target_tls_start, tls_start, tls_size);
+
+  VirtualProtect(target_tls, sizeof(*target_tls), PAGE_READWRITE, &old_protect);
+  *target_tls = *source_tls;
 }
