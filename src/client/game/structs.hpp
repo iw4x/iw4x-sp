@@ -14,20 +14,340 @@ struct scr_entref_t {
   unsigned __int16 classnum;
 };
 
-typedef void(__cdecl* BuiltinMethod)(scr_entref_t);
+typedef void (*BuiltinMethod)(scr_entref_t);
 
-typedef void(__cdecl* BuiltinFunction)();
+typedef void (*BuiltinFunction)();
 
 struct BuiltinMethodDef {
   const char* actionString;
-  void(__cdecl* actionFunc)(scr_entref_t);
+  void (*actionFunc)(scr_entref_t);
   int type;
 };
 
 struct BuiltinFunctionDef {
   const char* actionString;
-  void(__cdecl* actionFunc)();
+  void (*actionFunc)();
   int type;
+};
+
+struct OpcodeLookup {
+  const char* codePos;
+  unsigned int sourcePosIndex;
+  unsigned __int16 sourcePosCount;
+  unsigned __int16 cumulOffset;
+  unsigned __int16* localVars;
+  int profileTime;
+  int profileBuiltInTime;
+  int profileUsage;
+};
+
+static_assert(sizeof(OpcodeLookup) == 0x1C);
+
+struct SourceLookup {
+  unsigned int sourcePos;
+  int type;
+};
+
+struct SaveSourceBufferInfo {
+  char* buf;
+  char* sourceBuf;
+  int len;
+};
+
+struct scrParserGlob_t {
+  OpcodeLookup* opcodeLookup;
+  unsigned int opcodeLookupMaxSize;
+  unsigned int opcodeLookupLen;
+  SourceLookup* sourcePosLookup;
+  unsigned int sourcePosLookupMaxSize;
+  unsigned int sourcePosLookupLen;
+  unsigned int sourceBufferLookupMaxSize;
+  const char* currentCodePos;
+  unsigned int currentSourcePosCount;
+  SaveSourceBufferInfo* saveSourceBufferLookup;
+  unsigned int saveSourceBufferLookupLen;
+  int delayedSourceIndex;
+  int threadStartSourceIndex;
+};
+
+static_assert(sizeof(scrParserGlob_t) == 0x34);
+
+struct SourceBufferInfo {
+  const char* codePos;
+  char* buf;
+  const char* sourceBuf;
+  int len;
+  int sortedIndex;
+  bool archive;
+  int time;
+  int avgTime;
+  int maxTime;
+  float totalTime;
+  float totalBuiltIn;
+};
+
+struct CodeOffsetMap {
+  int type;
+  unsigned int cumulOffset;
+  int codeOffset;
+  int sourcePos;
+  int newCodeOffest;
+};
+
+struct scrParserPub_t {
+  SourceBufferInfo* sourceBufferLookup;
+  unsigned int sourceBufferLookupLen;
+  const char* scriptfilename;
+  const char* sourceBuf;
+  CodeOffsetMap* codeOffsetMap;
+  unsigned int codeOffsetMapLen;
+  int useCodeOffsetMap;
+};
+
+static_assert(sizeof(scrParserPub_t) == 0x1C);
+
+struct VariableStackBuffer {
+  const char* pos;
+  unsigned __int16 size;
+  unsigned __int16 bufLen;
+  unsigned __int16 localId;
+  unsigned __int8 time;
+  char buf[1];
+};
+
+union VariableUnion {
+  int intValue;
+  float floatValue;
+  unsigned int stringValue;
+  const float* vectorValue;
+  const char* codePosValue;
+  unsigned int pointerValue;
+  VariableStackBuffer* stackValue;
+  unsigned int entityOffset;
+};
+
+struct VariableValue {
+  VariableUnion u;
+  int type;
+};
+
+struct function_stack_t {
+  const char* pos;
+  unsigned int localId;
+  unsigned int localVarCount;
+  VariableValue* top;
+  VariableValue* startTop;
+};
+
+struct function_frame_t {
+  function_stack_t fs;
+  int topType;
+};
+
+struct scrVmPub_t {
+  unsigned int* localVars;
+  VariableValue* maxstack;
+  int function_count;
+  function_frame_t* function_frame;
+  VariableValue* top;
+  bool debugCode;
+  bool abort_on_error;
+  bool terminal_error;
+  unsigned int inparamcount;
+  unsigned int outparamcount;
+  function_frame_t function_frame_start[32];
+  VariableValue stack[2048];
+};
+
+struct HunkUser {
+  HunkUser* current;
+  HunkUser* next;
+  int maxSize;
+  int end;
+  int pos;
+  const char* name;
+  bool fixed;
+  int type;
+  unsigned __int8 buf[1];
+};
+
+static_assert(sizeof(HunkUser) == 0x24);
+
+struct scrVarPub_t {
+  const char* fieldBuffer;
+  unsigned __int16 canonicalStrCount;
+  bool developer_script;
+  bool evaluate;
+  const char* error_message;
+  int error_index;
+  unsigned int time;
+  unsigned int timeArrayId;
+  unsigned int pauseArrayId;
+  unsigned int notifyArrayId;
+  unsigned int objectStackId;
+  unsigned int levelId;
+  unsigned int gameId;
+  unsigned int animId;
+  unsigned int freeEntList;
+  unsigned int tempVariable;
+  unsigned int numScriptValues[2];
+  bool bInited;
+  unsigned __int16 savecount;
+  unsigned __int16 savecountMark;
+  unsigned int checksum;
+  unsigned int entId;
+  unsigned int entFieldName;
+  HunkUser* programHunkUser;
+  const char* programBuffer;
+  const char* endScriptBuffer;
+  unsigned __int16 saveIdMap[36864];
+  unsigned __int16 saveIdMapRev[36864];
+  bool bScriptProfile;
+  float scriptProfileMinTime;
+  bool bScriptProfileBuiltin;
+  float scriptProfileBuiltinMinTime;
+  unsigned int numScriptThreads;
+  unsigned int numScriptObjects;
+  const char* varUsagePos;
+  int ext_threadcount;
+  int totalObjectRefCount;
+  volatile int totalVectorRefCount;
+  unsigned int removeId;
+};
+
+static_assert(sizeof(scrVarPub_t) == 0x2408C);
+
+struct scr_localVar_t {
+  unsigned int name;
+  unsigned int sourcePos;
+};
+
+struct scr_block_t {
+  int abortLevel;
+  int localVarsCreateCount;
+  int localVarsPublicCount;
+  int localVarsCount;
+  unsigned __int8 localVarsInitBits[8];
+  scr_localVar_t localVars[64];
+};
+
+struct scrCompilePub_t {
+  int value_count;
+  int far_function_count;
+  unsigned int loadedscripts;
+  unsigned int scriptsPos;
+  unsigned int scriptsCount;
+  unsigned int scriptsDefine;
+  unsigned int builtinFunc;
+  unsigned int builtinMeth;
+  unsigned __int16 canonicalStrings[65536];
+  const char* in_ptr;
+  bool in_ptr_valid;
+  const char* parseBuf;
+  bool script_loading;
+  bool allowedBreakpoint;
+  int developer_statement;
+  char* opcodePos;
+  unsigned int programLen;
+  int func_table_size;
+  int func_table[1024];
+  scr_block_t* pauseBlock;
+};
+
+struct CaseStatementInfo {
+  unsigned int name;
+  const char* codePos;
+  unsigned int sourcePos;
+  CaseStatementInfo* next;
+};
+
+struct BreakStatementInfo {
+  const char* codePos;
+  const char* nextCodePos;
+  BreakStatementInfo* next;
+};
+
+struct ContinueStatementInfo {
+  const char* codePos;
+  const char* nextCodePos;
+  ContinueStatementInfo* next;
+};
+
+struct PrecacheEntry {
+  unsigned __int16 filename;
+  bool include;
+  unsigned int sourcePos;
+};
+
+union sval_u {
+  int type;
+  unsigned int stringValue;
+  unsigned int idValue;
+  float floatValue;
+  int intValue;
+  sval_u* node;
+  unsigned int sourcePosValue;
+  const char* codePosValue;
+  const char* debugString;
+  scr_block_t* block;
+};
+
+struct VariableCompileValue {
+  VariableValue value;
+  sval_u sourcePos;
+};
+
+struct scrCompileGlob_t {
+  unsigned char* codePos;
+  unsigned char* prevOpcodePos;
+  unsigned int filePosId;
+  unsigned int fileCountId;
+  int cumulOffset;
+  int prevCumulOffset;
+  int maxOffset;
+  int maxCallOffset;
+  bool bConstRefCount;
+  bool in_developer_thread;
+  unsigned int developer_thread_sourcePos;
+  bool firstThread[2];
+  CaseStatementInfo* currentCaseStatement;
+  bool bCanBreak;
+  BreakStatementInfo* currentBreakStatement;
+  bool bCanContinue;
+  ContinueStatementInfo* currentContinueStatement;
+  scr_block_t** breakChildBlocks;
+  int* breakChildCount;
+  scr_block_t* breakBlock;
+  scr_block_t** continueChildBlocks;
+  int* continueChildCount;
+  bool forceNotCreate;
+  PrecacheEntry* precachescriptList;
+  VariableCompileValue value_start[32];
+};
+
+struct scr_animtree_t {
+  void* anims;
+};
+
+struct scrAnimPub_t {
+  unsigned int animtrees;
+  unsigned int animtree_node;
+  unsigned int animTreeNames;
+  scr_animtree_t xanim_lookup[2][128];
+  unsigned int xanim_num[2];
+  unsigned int animTreeIndex;
+  bool animtree_loading;
+};
+
+enum {
+  SOURCE_TYPE_BREAKPOINT = 0x1,
+  SOURCE_TYPE_CALL = 0x2,
+  SOURCE_TYPE_CALL_POINTER = 0x4,
+  SOURCE_TYPE_THREAD_START = 0x8,
+  SOURCE_TYPE_BUILTIN_CALL = 0x10,
+  SOURCE_TYPE_NOTIFY = 0x20,
+  SOURCE_TYPE_GETFUNCTION = 0x40,
+  SOURCE_TYPE_WAIT = 0x80,
 };
 
 enum {
@@ -490,11 +810,454 @@ struct GameWorldSp {
 
 static_assert(sizeof(GameWorldSp) == 0x38);
 
+struct StringTableCell {
+  const char* string;
+  int hash;
+};
+
+struct StringTable {
+  const char* name;
+  int columnCount;
+  int rowCount;
+  StringTableCell* values;
+};
+
+#define MAX_UISTRINGS 0x800
+
+struct rectDef_s {
+  float x;
+  float y;
+  float w;
+  float h;
+  char horzAlign;
+  char vertAlign;
+};
+
+struct windowDef_t {
+  const char* name;
+  rectDef_s rect;
+  rectDef_s rectClient;
+  const char* group;
+  int style;
+  int border;
+  int ownerDraw;
+  int ownerDrawFlags;
+  float borderSize;
+  int staticFlags;
+  int dynamicFlags[1];
+  int nextTime;
+  float foreColor[4];
+  float backColor[4];
+  float borderColor[4];
+  float outlineColor[4];
+  float disableColor[4];
+  void* background;
+};
+
+static_assert(sizeof(windowDef_t) == 0xA4);
+
+enum expDataType {
+  VAL_INT = 0x0,
+  VAL_FLOAT = 0x1,
+  VAL_STRING = 0x2,
+  NUM_INTERNAL_DATATYPES = 0x3,
+  VAL_FUNCTION = 0x3,
+  NUM_DATATYPES = 0x4,
+};
+
+struct Operand {
+  expDataType dataType;
+  char internals[4];
+};
+
+union entryInternalData {
+  int op;
+  Operand operand;
+};
+
+struct expressionEntry {
+  int type;
+  entryInternalData data;
+};
+
+struct menuTransition {
+  int transitionType;
+  int targetField;
+  int startTime;
+  float startVal;
+  float endVal;
+  float time;
+  int endTriggerType;
+};
+
+struct StaticDvar {
+  dvar_t* dvar;
+  char* dvarName;
+};
+
+struct StaticDvarList {
+  int numStaticDvars;
+  StaticDvar** staticDvars;
+};
+
+struct StringList {
+  int totalStrings;
+  const char** strings;
+};
+
+struct ExpressionSupportingData; // required against my will
+
+struct Statement_s {
+  int numEntries;
+  expressionEntry* entries;
+  ExpressionSupportingData* supportingData;
+  int lastExecuteTime;
+  Operand lastResult;
+};
+
+struct UIFunctionList {
+  int totalFunctions;
+  Statement_s** functions;
+};
+
+struct ExpressionSupportingData {
+  UIFunctionList uifunctions;
+  StaticDvarList staticDvarList;
+  StringList uiStrings;
+};
+
+static_assert(sizeof(Statement_s) == 0x18);
+
+struct ItemFloatExpression {
+  int target;
+  Statement_s* expression;
+};
+
+struct MenuEventHandlerSet; // required against my will
+
+struct ConditionalScript {
+  MenuEventHandlerSet* eventHandlerSet;
+  Statement_s* eventExpression;
+};
+
+static_assert(sizeof(ConditionalScript) == 0x8);
+
+struct SetLocalVarData {
+  const char* localVarName;
+  Statement_s* expression;
+};
+
+union EventData {
+  const char* unconditionalScript;
+  ConditionalScript* conditionalScript;
+  MenuEventHandlerSet* elseScript;
+  SetLocalVarData* setLocalVarData;
+};
+
+#define MAX_EVENT_HANDLERS_PER_EVENT 200
+
+enum EventType {
+  EVENT_UNCONDITIONAL = 0x0,
+  EVENT_IF = 0x1,
+  EVENT_ELSE = 0x2,
+  EVENT_SET_LOCAL_VAR_BOOL = 0x3,
+  EVENT_SET_LOCAL_VAR_INT = 0x4,
+  EVENT_SET_LOCAL_VAR_FLOAT = 0x5,
+  EVENT_SET_LOCAL_VAR_STRING = 0x6,
+  EVENT_COUNT = 0x7,
+};
+
+struct MenuEventHandler {
+  EventData eventData;
+  char eventType;
+};
+
+static_assert(sizeof(MenuEventHandler) == 0x8);
+
+struct MenuEventHandlerSet {
+  int eventHandlerCount;
+  MenuEventHandler** eventHandlers;
+};
+
+struct ItemKeyHandler {
+  int key;
+  MenuEventHandlerSet* action;
+  ItemKeyHandler* next;
+};
+
+struct columnInfo_s {
+  int pos;
+  int width;
+  int maxChars;
+  int alignment;
+};
+
+struct listBoxDef_s {
+  int mousePos;
+  int startPos[1];
+  int endPos[1];
+  int drawPadding;
+  float elementWidth;
+  float elementHeight;
+  int elementStyle;
+  int numColumns;
+  columnInfo_s columnInfo[16];
+  MenuEventHandlerSet* onDoubleClick;
+  int notselectable;
+  int noScrollBars;
+  int usePaging;
+  float selectBorder[4];
+  void* selectIcon;
+};
+
+static_assert(sizeof(listBoxDef_s) == 0x144);
+
+struct editFieldDef_s {
+  float minVal;
+  float maxVal;
+  float defVal;
+  float range;
+  int maxChars;
+  int maxCharsGotoNext;
+  int maxPaintChars;
+  int paintOffset;
+};
+
+static_assert(sizeof(editFieldDef_s) == 0x20);
+
+#define MAX_MULTI_DVARS 32
+
+struct multiDef_s {
+  const char* dvarList[MAX_MULTI_DVARS];
+  const char* dvarStr[MAX_MULTI_DVARS];
+  float dvarValue[MAX_MULTI_DVARS];
+  int count;
+  int strDef;
+};
+
+static_assert(sizeof(multiDef_s) == 0x188);
+
+struct newsTickerDef_s {
+  int feedId;
+  int speed;
+  int spacing;
+  int lastTime;
+  int start;
+  int end;
+  float x;
+};
+
+static_assert(sizeof(newsTickerDef_s) == 0x1C);
+
+struct textScrollDef_s {
+  int startTime;
+};
+
+union itemDefData_t {
+  listBoxDef_s* listBox;
+  editFieldDef_s* editField;
+  multiDef_s* multi;
+  const char* enumDvarName;
+  newsTickerDef_s* ticker;
+  textScrollDef_s* scroll;
+  void* data;
+};
+
+struct menuDef_t; // required against my will
+
+struct itemDef_s {
+  windowDef_t window;
+  rectDef_s textRect[1];
+  int type;
+  int dataType;
+  int alignment;
+  int fontEnum;
+  int textAlignMode;
+  float textalignx;
+  float textaligny;
+  float textscale;
+  int textStyle;
+  int gameMsgWindowIndex;
+  int gameMsgWindowMode;
+  const char* text;
+  int itemFlags;
+  menuDef_t* parent;
+  MenuEventHandlerSet* mouseEnterText;
+  MenuEventHandlerSet* mouseExitText;
+  MenuEventHandlerSet* mouseEnter;
+  MenuEventHandlerSet* mouseExit;
+  MenuEventHandlerSet* action;
+  MenuEventHandlerSet* accept;
+  MenuEventHandlerSet* onFocus;
+  MenuEventHandlerSet* leaveFocus;
+  const char* dvar;
+  const char* dvarTest;
+  ItemKeyHandler* onKey;
+  const char* enableDvar;
+  const char* localVar;
+  int dvarFlags;
+  void* focusSound;
+  float special;
+  int cursorPos[1];
+  itemDefData_t typeData;
+  int imageTrack;
+  int floatExpressionCount;
+  ItemFloatExpression* floatExpressions;
+  Statement_s* visibleExp;
+  Statement_s* disabledExp;
+  Statement_s* textExp;
+  Statement_s* materialExp;
+  float glowColor[4];
+  bool decayActive;
+  int fxBirthTime;
+  int fxLetterTime;
+  int fxDecayStartTime;
+  int fxDecayDuration;
+  int lastSoundPlayedTime;
+};
+
+static_assert(sizeof(itemDef_s) == 0x17C);
+
+struct menuDef_t {
+  windowDef_t window;
+  const char* font;
+  int fullScreen;
+  int itemCount;
+  int fontIndex;
+  int cursorItem[1];
+  int fadeCycle;
+  float fadeClamp;
+  float fadeAmount;
+  float fadeInAmount;
+  float blurRadius;
+  MenuEventHandlerSet* onOpen;
+  MenuEventHandlerSet* onCloseRequest;
+  MenuEventHandlerSet* onClose;
+  MenuEventHandlerSet* onESC;
+  ItemKeyHandler* onKey;
+  Statement_s* visibleExp;
+  const char* allowedBinding;
+  const char* soundName;
+  int imageTrack;
+  float focusColor[4];
+  Statement_s* rectXExp;
+  Statement_s* rectYExp;
+  Statement_s* rectWExp;
+  Statement_s* rectHExp;
+  Statement_s* openSoundExp;
+  Statement_s* closeSoundExp;
+  itemDef_s** items;
+  menuTransition scaleTransition[1];
+  menuTransition alphaTransition[1];
+  menuTransition xTransition[1];
+  menuTransition yTransition[1];
+  ExpressionSupportingData* expressionData;
+};
+
+static_assert(sizeof(menuDef_t) == 0x190);
+
+struct loadAssets_t {
+  float fadeClamp;
+  int fadeCycle;
+  float fadeAmount;
+  float fadeInAmount;
+};
+
+enum UILocalVarType {
+  UILOCALVAR_INT = 0x0,
+  UILOCALVAR_FLOAT = 0x1,
+  UILOCALVAR_STRING = 0x2,
+};
+
+struct UILocalVar {
+  UILocalVarType type;
+  const char* name;
+  union {
+    int integer;
+    float value;
+    const char* string;
+  } u;
+};
+
+struct UILocalVarContext {
+  UILocalVar table[256];
+};
+
+struct UiContext {
+  int localClientNum;
+  float bias;
+  int realTime;
+  int frameTime;
+  struct {
+    float x;
+    float y;
+    int lastMoveTime;
+  } cursor;
+  int isCursorVisible;
+  int paintFull;
+  int screenWidth;
+  int screenHeight;
+  float screenAspect;
+  float FPS;
+  float blurRadiusOut;
+  menuDef_t* Menus[640];
+  int menuCount;
+  menuDef_t* menuStack[16];
+  int openMenuCount;
+  UILocalVarContext localVars;
+  const StringTable* cinematicSubtitles;
+};
+
 struct MenuList {
   const char* name;
   int menuCount;
-  void** menus;
+  menuDef_t** menus;
 };
+
+struct savegameStatus_s {
+  int sortKey;
+  int sortDir;
+  int displaySavegames[256];
+};
+
+struct qtime_s {
+  int tm_sec;
+  int tm_min;
+  int tm_hour;
+  int tm_mday;
+  int tm_mon;
+  int tm_year;
+  int tm_wday;
+  int tm_yday;
+  int tm_isdst;
+};
+
+struct SavegameInfo {
+  const char* savegameFile;
+  const char* savegameName;
+  const char* imageName;
+  const char* mapName;
+  const char* savegameInfoText;
+  const char* time;
+  const char* date;
+  qtime_s tm;
+};
+
+struct uiInfo_s {
+  UiContext uiDC;
+  SavegameInfo savegameList[512];
+  int savegameCount;
+  savegameStatus_s savegameStatus;
+  int timeIndex;
+  int previousTimes[4];
+  bool allowScriptMenuResponse;
+  char savegameName[64];
+  char savegameInfo[256];
+  void* sshotImage;
+  char sshotImageName[64];
+};
+
+static_assert(sizeof(uiInfo_s) == 0x9C2C);
 
 struct LocalizeEntry {
   const char* value;
@@ -510,6 +1273,7 @@ union XAssetHeader {
   LocalizeEntry* localize;
   WeaponCompleteDef* weapon;
   RawFile* rawfile;
+  StringTable* stringTable;
   void* data;
 };
 

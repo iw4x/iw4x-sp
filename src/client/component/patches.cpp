@@ -69,9 +69,6 @@ private:
     // Build os path stuff
     utils::hook::set<std::uint8_t>(0x6300BF, 0xEB);
 
-    // Show intro (or not)
-    utils::hook::set<std::uint8_t>(0x6035BD, 0x0);
-
     // raw -> main
     utils::hook::set<std::uint32_t>(0x50A0B2, 0x723390);
 

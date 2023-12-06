@@ -6,10 +6,10 @@
 namespace steam_patches {
 namespace {
 void __declspec(naked) steam_init() {
-  const static DWORD func = 0x4293F0;
+  const static DWORD Steam_IsClientSignedInLocally_t = 0x4293F0;
 
   __asm {
-    call func;
+    call Steam_IsClientSignedInLocally_t;
     test al, al;
     jz return_safe;
 

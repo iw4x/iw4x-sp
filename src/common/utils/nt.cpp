@@ -57,10 +57,9 @@ std::vector<PIMAGE_SECTION_HEADER> library::get_section_headers() const {
 
   for (uint16_t i = 0; i < nt_headers->FileHeader.NumberOfSections;
        ++i, ++section) {
-    if (section)
+    if (section) {
       headers.push_back(section);
-    else
-      OutputDebugStringA("There was an invalid section :O");
+    }
   }
 
   return headers;
@@ -97,8 +96,9 @@ bool library::is_valid() const {
 }
 
 std::string library::get_name() const {
-  if (!this->is_valid())
+  if (!this->is_valid()) {
     return {};
+  }
 
   auto path = this->get_path();
   const auto pos = path.find_last_of("/\\");
@@ -109,8 +109,9 @@ std::string library::get_name() const {
 }
 
 std::string library::get_path() const {
-  if (!this->is_valid())
+  if (!this->is_valid()) {
     return {};
+  }
 
   char name[MAX_PATH] = {0};
   GetModuleFileNameA(this->module_, name, sizeof name);
@@ -119,8 +120,9 @@ std::string library::get_path() const {
 }
 
 std::string library::get_folder() const {
-  if (!this->is_valid())
+  if (!this->is_valid()) {
     return {};
+  }
 
   const auto path = std::filesystem::path(this->get_path());
   return path.parent_path().generic_string();
@@ -200,6 +202,15 @@ std::string library::get_dll_directory() {
   }
 
   return directory;
+}
+
+bool is_wine() {
+  static const auto has_wine_export = []() -> bool {
+    const library ntdll("ntdll.dll");
+    return ntdll.get_proc<void*>("wine_get_version");
+  }();
+
+  return has_wine_export;
 }
 
 void raise_hard_exception() {

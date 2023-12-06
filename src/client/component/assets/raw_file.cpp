@@ -19,7 +19,7 @@ char* db_read_raw_file_stub(const char* filename, char* buf, int size) {
   auto file_handle = 0;
   const auto file_size = game::FS_FOpenFileRead(filename, &file_handle);
 
-  if (file_handle != 0) {
+  if (file_handle) {
     if ((file_size + 1) <= size) {
       game::FS_Read(buf, file_size, file_handle);
       buf[file_size] = '\0';
@@ -48,7 +48,7 @@ const char* com_load_info_string_fast_file(const char* file_name,
                                            const char* file_desc,
                                            const char* ident,
                                            char* load_buffer) {
-  const static DWORD func = 0x602FA0;
+  const static DWORD Com_LoadInfoString_FastFile_t = 0x602FA0;
   const char* result{};
 
   __asm {
@@ -58,7 +58,7 @@ const char* com_load_info_string_fast_file(const char* file_name,
     mov edi, file_name;
     push ident;
     push file_desc;
-    call func;
+    call Com_LoadInfoString_FastFile_t;
     add esp, 0x8;
     mov result, eax;
 
@@ -78,7 +78,7 @@ const char* com_load_info_string_load_obj(const char* file_name,
       game::FS_FOpenFileByMode(file_name, &file_handle, game::FS_READ);
   if (file_len < 0) {
     game::Com_DPrintf(game::CON_CHANNEL_SYSTEM,
-                      "Could not load %s [%s] as rawfile", file_desc,
+                      "Could not load %s [%s] as rawfile\n", file_desc,
                       file_name);
     return nullptr;
   }
@@ -134,12 +134,12 @@ const char* com_load_info_string_stub(const char* file_name,
 bool is_enabled() { IS_FLAG_ENABLED(dump_raw_file); }
 } // namespace
 
-void process_raw_file(game::XAssetHeader header) {
+void process_raw_file(game::XAssetHeader* header) {
   if (!is_enabled()) {
     return;
   }
 
-  const auto* raw_file = header.rawfile;
+  const auto* raw_file = header->rawfile;
   const auto filename = utils::string::va("raw/{0}", raw_file->name);
 
   if (raw_file->compressedLen > 0) {
@@ -147,7 +147,7 @@ void process_raw_file(game::XAssetHeader header) {
     uncompressed.resize(raw_file->len);
 
     if (uncompress(uncompressed.data(), (uLongf*)&raw_file->len,
-                   (const Bytef*)raw_file->buffer,
+                   reinterpret_cast<const Bytef*>(raw_file->buffer),
                    raw_file->compressedLen) == Z_OK) {
       std::string data;
       data.assign(uncompressed.begin(), uncompressed.end());

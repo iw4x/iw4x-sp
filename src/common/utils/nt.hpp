@@ -101,6 +101,8 @@ private:
   HMODULE module_;
 };
 
+bool is_wine();
+
 __declspec(noreturn) void raise_hard_exception();
 std::string load_resource(int id);
 

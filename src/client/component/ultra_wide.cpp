@@ -25,32 +25,32 @@ void set_aspect_ratio() {
 
 __declspec(naked) void set_aspect_ratio_stub() {
   __asm {
-        mov eax, [eax + 0x10];
-        cmp eax, 4;
+    mov eax, [eax + 0x10];
+    cmp eax, 4;
 
-        mov dword ptr ds:0x1C91A68, edx;
-        mov dword ptr ds:0x1C91A6C, esi;
-        mov dword ptr ds:0x1C91A74, ecx;
+    mov dword ptr ds:0x1C91A68, edx;
+    mov dword ptr ds:0x1C91A6C, esi;
+    mov dword ptr ds:0x1C91A74, ecx;
 
-        ja default_case;
-        je custom_ratio;
+    ja default_case;
+    je custom_ratio;
 
-        push 0x50AE6C;
-        ret;
+    push 0x50AE6C;
+    ret;
 
-    default_case:
-        push 0x50AF6C;
-        ret;
+   default_case:
+    push 0x50AF6C;
+    ret;
 
-    custom_ratio:
-        pushad;
-        call set_aspect_ratio;
-        popad;
+   custom_ratio:
+    pushad;
+    call set_aspect_ratio;
+    popad;
 
-        mov eax, 1; // set widescreen to 1
+    mov eax, 1; // set widescreen to 1
 
-        push 0x50AF05;
-        ret;
+    push 0x50AF05;
+    ret;
   }
 }
 

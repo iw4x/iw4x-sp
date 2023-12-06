@@ -9,6 +9,9 @@ const game::dvar_t* pm_rocketJump = nullptr;
 const game::dvar_t* pm_rocketJumpScale = nullptr;
 const game::dvar_t* pm_playerCollision = nullptr;
 const game::dvar_t* pm_elevators = nullptr;
+const game::dvar_t* pm_disableLandingSlowdown = nullptr;
+const game::dvar_t* pm_bunnyHop = nullptr;
+const game::dvar_t* pm_snapVector = nullptr;
 
 const game::dvar_t* cg_drawVersion = nullptr;
 const game::dvar_t* cg_drawVersionX = nullptr;
@@ -27,4 +30,9 @@ const game::dvar_t** sv_mapname =
 
 const game::dvar_t** version =
     reinterpret_cast<const game::dvar_t**>(0x145D690);
+
+const game::dvar_t** com_developer =
+    reinterpret_cast<const game::dvar_t**>(0x145D648);
+const game::dvar_t** com_developer_script =
+    reinterpret_cast<const game::dvar_t**>(0x145EC58);
 } // namespace dvars

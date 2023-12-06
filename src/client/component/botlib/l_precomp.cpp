@@ -94,7 +94,7 @@ game::define_s* copy_define([[maybe_unused]] game::source_s* source,
   game::token_s *token, *newtoken, *lasttoken;
 
   auto* newdefine = static_cast<game::define_s*>(
-      game::GetMemory(sizeof(game::define_s) + strlen(define->name) + 1));
+      game::GetMemory(sizeof(game::define_s) + std::strlen(define->name) + 1));
 
   // copy the define name
   newdefine->name = (char*)newdefine + sizeof(game::define_s);

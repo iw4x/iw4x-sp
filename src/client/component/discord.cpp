@@ -61,7 +61,6 @@ private:
   static void ready(const DiscordUser* request) {
     ZeroMemory(&discord_presence, sizeof(discord_presence));
 
-    discord_presence.state = "Singleplayer";
     discord_presence.instance = 1;
     discord_presence.startTimestamp = 0;
     printf("Discord: Ready\n");
@@ -69,7 +68,7 @@ private:
   }
 
   static void errored(const int error_code, const char* message) {
-    printf("Discord: (%i) %s", error_code, message);
+    printf("Discord: (%i) %s\n", error_code, message);
   }
 };
 } // namespace discord

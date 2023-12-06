@@ -225,7 +225,9 @@ std::string ecc::sign_message(const key& key, const std::string& message) {
   std::uint8_t buffer[512];
   unsigned long length = sizeof(buffer);
 
-  ecc_sign_hash(cs(message.data()), ul(message.size()), buffer, &length,
+  const auto hash = sha512::compute(message);
+
+  ecc_sign_hash(cs(hash.data()), ul(hash.size()), buffer, &length,
                 prng_.get_state(), prng_.get_id(), &key.get());
 
   return {cs(buffer), length};
@@ -236,9 +238,11 @@ bool ecc::verify_message(const key& key, const std::string& message,
   if (!key.is_valid())
     return false;
 
+  const auto hash = sha512::compute(message);
+
   auto result = 0;
   return (ecc_verify_hash(cs(signature.data()), ul(signature.size()),
-                          cs(message.data()), ul(message.size()), &result,
+                          cs(hash.data()), ul(hash.size()), &result,
                           &key.get()) == CRYPT_OK &&
           result != 0);
 }

@@ -21,7 +21,7 @@ constexpr const char* get_build_number() {
 
 const char* get_version_string() {
   const auto* result = utils::string::va(
-      "{} {} build {} {}", BUILD_TYPE, "(Alpha)", get_build_number(),
+      "{0} {1} build {2} {3}", BUILD_TYPE, "(Alpha)", get_build_number(),
       reinterpret_cast<const char*>(0x6A1574));
 
   return result;

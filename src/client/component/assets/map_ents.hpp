@@ -1,5 +1,5 @@
 #pragma once
 
 namespace assets {
-void process_map_ents(game::XAssetHeader header);
+void process_map_ents(game::XAssetHeader* header);
 }

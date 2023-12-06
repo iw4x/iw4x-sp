@@ -153,7 +153,7 @@ game::script_s* load_script_file(const char* filename) {
   // pointer to end of script buffer
   script->end_p = &script->buffer[length];
   // set if there's a token available in script->token
-  script->tokenavailable = 0;
+  script->tokenavailable = false;
 
   script->line = 1;
   script->lastline = 1;
@@ -183,7 +183,7 @@ game::script_s* load_script_memory(const char* ptr, int length,
   // pointer to end of script buffer
   script->end_p = &script->buffer[length];
   // set if there's a token available in script->token
-  script->tokenavailable = 0;
+  script->tokenavailable = false;
 
   script->line = 1;
   script->lastline = 1;

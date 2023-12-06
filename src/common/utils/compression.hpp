@@ -11,7 +11,7 @@ std::string decompress(const std::string& data);
 namespace zip {
 class archive {
 public:
-  void add(std::string filename, std::string data);
+  void add(const std::string& filename, const std::string& data);
   bool write(const std::string& filename, const std::string& comment = {});
 
 private:

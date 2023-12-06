@@ -19,9 +19,9 @@ const game::dvar_t* dvar_register_name(const char* dvar_name, const char* value,
 class component final : public component_interface {
 public:
   void post_start() override {
-    dvar::override::register_bool("intro", true, game::DVAR_NONE);
+    dvar::override::register_bool("intro", false, game::DVAR_ARCHIVE);
     dvar::override::register_float("cg_fov", 65.0f, 65.0f, 160.0f,
-                                   game::DVAR_ARCHIVE);
+                                   game::DVAR_ARCHIVE | game::DVAR_SAVED);
     dvar::override::register_string("fs_basegame", BASEGAME, game::DVAR_INIT);
 
 #ifdef _DEBUG

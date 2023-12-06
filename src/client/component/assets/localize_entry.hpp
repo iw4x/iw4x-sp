@@ -1,5 +1,5 @@
 #pragma once
 
 namespace assets {
-void process_localize_entry(game::XAssetHeader header);
+void process_localize_entry(game::XAssetHeader* header);
 }

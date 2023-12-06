@@ -58,9 +58,9 @@ public:
 private:
   utils::nt::library steam_client_module_{};
 
-  steam::interface client_engine_ {};
-  steam::interface client_user_ {};
-  steam::interface client_utils_ {};
+  steam::interface client_engine_{};
+  steam::interface client_user_{};
+  steam::interface client_utils_{};
 
   void* steam_pipe_ = nullptr;
   void* global_user_ = nullptr;
@@ -126,11 +126,11 @@ private:
 
     this->client_utils_.invoke<void>("SetAppIDForCurrentPipe", app_id, false);
 
-    char our_directory[MAX_PATH] = {0};
+    char our_directory[MAX_PATH]{};
     GetCurrentDirectoryA(sizeof(our_directory), our_directory);
 
     const auto path = runner_file.get_extracted_file();
-    const auto* cmdline =
+    const auto* cmd_line =
         utils::string::va("\"{0}\" -proc {1}", path, GetCurrentProcessId());
 
     game_id game_id;
@@ -141,7 +141,7 @@ private:
     game_id.raw.mod_id =
         *reinterpret_cast<const unsigned int*>(mod_id) | 0x80000000;
 
-    this->client_user_.invoke<bool>("SpawnProcess", path.data(), cmdline,
+    this->client_user_.invoke<bool>("SpawnProcess", path.data(), cmd_line,
                                     our_directory, game_id.bits, title.data(),
                                     app_id, 0, 0, 0);
   }

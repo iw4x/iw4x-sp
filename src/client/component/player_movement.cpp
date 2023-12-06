@@ -109,6 +109,59 @@ void pm_player_trace_stub(game::pmove_t* pm, game::trace_t* results,
     results->startsolid = false;
   }
 }
+
+void pm_crash_land_stub(const float* v, float scale, const float* result) {
+  if (!dvars::pm_disableLandingSlowdown->current.enabled) {
+    game::Vec3Scale(v, scale, result);
+  }
+}
+
+void __declspec(naked) jump_check_stub() {
+  __asm {
+    push eax;
+    mov eax, dvars::pm_bunnyHop;
+    cmp byte ptr [eax + 0x10], 1;
+    pop eax;
+
+    je auto_hop;
+
+    // Game's code
+    test dword ptr [ebx + 0x48], 0x400;
+    push 0x4D25EF;
+    ret;
+
+   auto_hop:
+    push 0x4D25FE;
+    ret;
+  }
+}
+
+void __declspec(naked) p_move_single_stub() {
+  __asm {
+    push eax;
+    mov eax, dvars::pm_snapVector;
+    cmp byte ptr [eax + 0x10], 1;
+    pop eax;
+
+    jnz skip;
+
+    lea ebp, [ebp + 0x28]; // velocity
+    push ebp;
+    call game::Sys_SnapVector;
+    add esp, 0x4;
+
+   skip:
+
+    // Game's code
+    pop edi;
+    pop esi;
+    pop ebp;
+    pop ebx;
+    add esp, 0x90;
+    ret;
+  }
+}
+
 void g_scr_is_sprinting(const game::scr_entref_t entref) {
   const auto* client = game::GetEntity(entref)->client;
   if (!client) {
@@ -154,6 +207,13 @@ public:
         .install()
         ->quick(); // PM_CorrectAllSolid
 
+    utils::hook(0x64E571, pm_crash_land_stub, HOOK_CALL)
+        .install()
+        ->quick(); // Vec3Scale
+    utils::hook(0x4D25E8, jump_check_stub, HOOK_JUMP).install()->quick();
+
+    utils::hook(0x6530C3, p_move_single_stub, HOOK_JUMP).install()->quick();
+
     gsc::add_method("IsSprinting", g_scr_is_sprinting);
     register_dvars();
   }
@@ -172,6 +232,11 @@ public:
          "pm_playerCollision", true, game::DVAR_NONE, "Push intersecting players away from each other");
     dvars::pm_elevators = game::Dvar_RegisterBool(
          "pm_elevators", false, game::DVAR_NONE, "CoD4 elevators");
+    dvars::pm_disableLandingSlowdown = game::Dvar_RegisterBool("pm_disableLandingSlowdown",
+        false, game::DVAR_NONE, "Toggle landing slowdown");
+    dvars::pm_bunnyHop = game::Dvar_RegisterBool("pm_bunnyHop",
+        false, game::DVAR_NONE, "Constantly jump when holding space");
+    dvars::pm_snapVector = game::Dvar_RegisterBool("pm_snapVector", false, game::DVAR_NONE, "Snap velocity");
     // clang-format on
   }
 };

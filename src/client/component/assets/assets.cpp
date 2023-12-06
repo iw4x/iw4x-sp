@@ -4,6 +4,7 @@
 #include "localize_entry.hpp"
 #include "map_ents.hpp"
 #include "raw_file.hpp"
+#include "string_table.hpp"
 
 #include <utils/hook.hpp>
 
@@ -13,13 +14,16 @@ void load_asset(game::XAssetType type, game::XAssetHeader* header) {
   if (header) {
     switch (type) {
     case game::ASSET_TYPE_LOCALIZE_ENTRY:
-      process_localize_entry(*header);
+      process_localize_entry(header);
       break;
     case game::ASSET_TYPE_MAP_ENTS:
-      process_map_ents(*header);
+      process_map_ents(header);
       break;
     case game::ASSET_TYPE_RAWFILE:
-      process_raw_file(*header);
+      process_raw_file(header);
+      break;
+    case game::ASSET_TYPE_STRINGTABLE:
+      process_string_table(header);
       break;
     default:
       break;

@@ -21,15 +21,25 @@
 #undef min
 #endif
 
-#include <algorithm>
+#undef GetObject
+
 #include <cassert>
 #include <cctype>
 #include <cstring>
+
+#include <algorithm>
+#include <filesystem>
+#include <format>
+#include <fstream>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <mutex>
 #include <string>
-#include <map>
+#include <type_traits>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 #pragma comment(lib, "ntdll.lib")
 #pragma comment(lib, "Crypt32.lib")

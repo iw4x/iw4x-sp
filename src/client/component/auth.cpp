@@ -20,7 +20,7 @@ std::string get_hw_profile_guid() {
 }
 
 std::string get_protected_data() {
-  std::string input = "X-Labs-IW4x-Auth";
+  std::string input = "Alter-Ware-IW4-SP-Auth";
 
   DATA_BLOB data_in{}, data_out{};
   data_in.pbData = reinterpret_cast<std::uint8_t*>(input.data());

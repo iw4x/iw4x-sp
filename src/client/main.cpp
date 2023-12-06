@@ -95,8 +95,7 @@ void enable_dpi_awareness() {
 void apply_environment() {
   char* buffer{};
   std::size_t size{};
-  if (_dupenv_s(&buffer, &size, "XLABS_MW2_INSTALL") != 0 ||
-      buffer == nullptr) {
+  if (_dupenv_s(&buffer, &size, "MW2_INSTALL") != 0 || buffer == nullptr) {
     return;
   }
 

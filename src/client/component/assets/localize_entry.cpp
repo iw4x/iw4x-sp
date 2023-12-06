@@ -11,12 +11,12 @@ namespace {
 bool is_enabled() { IS_FLAG_ENABLED(dump_localize_entry); }
 } // namespace
 
-void process_localize_entry(game::XAssetHeader header) {
+void process_localize_entry(game::XAssetHeader* header) {
   if (!is_enabled()) {
     return;
   }
 
-  auto* localize = header.localize;
+  auto* localize = header->localize;
   const auto filename =
       utils::string::va("raw/localizedstrings/{0}", localize->name);
 

@@ -68,9 +68,9 @@ BEGIN
             VALUE "InternalName", "IW4xSP"
             VALUE "LegalCopyright", "Copyright (C) 2022 X Labs Project. All rights reserved."
             VALUE "Licence", "GPLv3"
-            VALUE "Info", "https://xlabs.dev/support_iw4x_client"
-            VALUE "OriginalFilename", "iw4x-sp.exe"
-            VALUE "ProductName", "iw4x-sp"
+            VALUE "Info", "https://alterware.dev"
+            VALUE "OriginalFilename", "iw4-sp.exe"
+            VALUE "ProductName", "iw4-sp"
             VALUE "ProductVersion", VERSION_PRODUCT
         END
     END

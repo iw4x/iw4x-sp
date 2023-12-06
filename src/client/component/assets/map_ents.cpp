@@ -23,8 +23,8 @@ void load_map_entities(game::MapEnts* entry) {
 }
 } // namespace
 
-void process_map_ents(game::XAssetHeader header) {
-  auto* map_ents = header.mapEnts;
+void process_map_ents(game::XAssetHeader* header) {
+  auto* map_ents = header->mapEnts;
   load_map_entities(map_ents);
 }
 } // namespace assets
